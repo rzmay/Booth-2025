@@ -1,0 +1,37 @@
+{
+  // Enable formatting on save
+  "editor.formatOnSave": true,
+
+  // Use the C# extension for formatting
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  },
+
+  // Enable IntelliSense and auto-completion
+  "omnisharp.useModernNet": true, // Use modern .NET SDK
+  "omnisharp.enableRoslynAnalyzers": true, // Enable advanced analyzers
+  "omnisharp.useGlobalMono": "always",
+  "omnisharp.path": "latest",
+
+  // Unity-specific settings
+  "dotnet.preferCSharpExtension": true,
+  "files.associations": {
+    "*.cs": "csharp",
+    "*.shader": "glsl",
+    "*.cginc": "cpp"
+  },
+
+  // Sorting and cleaning up using directives
+  "csharpfixformat.sort.usings.enabled": true,
+
+  // Omnisharp-specific configurations
+  "omnisharp.enableEditorConfigSupport": true, // Use .editorconfig for consistency
+  "omnisharp.organizeImportsOnFormat": true, // Organize imports when formatting
+
+  // Miscellaneous
+  "explorer.autoReveal": false, // Prevent Unity file reveal spam in VSCode
+  "debug.unity": {
+    "useUnityDebugger": true // Use Unity Debugger when attaching
+  },
+  "dotnet.defaultSolution": "Booth 2025.sln"
+}
