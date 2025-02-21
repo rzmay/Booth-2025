@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4002619127713880517}
   - component: {fileID: 3475049374207461500}
   - component: {fileID: 2075653733361932193}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CrystalSuperweaponBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3836,13 +3836,13 @@ ParticleSystem:
       properties: 0
       emitProbability: 1
   LightsModule:
-    enabled: 0
-    ratio: 0
-    light: {fileID: 0}
-    randomDistribution: 1
+    enabled: 1
+    ratio: 0.35
+    light: {fileID: 1829241602684308235, guid: 37e569fed99a941108d2f19ebcbd1932, type: 3}
+    randomDistribution: 0
     color: 1
-    range: 1
-    intensity: 1
+    range: 0
+    intensity: 0
     rangeCurve:
       serializedVersion: 2
       minMaxState: 0
@@ -3899,7 +3899,7 @@ ParticleSystem:
     intensityCurve:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.2
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -3949,7 +3949,7 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    maxLights: 20
+    maxLights: 10
   TrailModule:
     enabled: 0
     mode: 0
@@ -4978,8 +4978,6 @@ MonoBehaviour:
   length: 5
   width: 0.25
   plasmaSpread: 0.5
-  _laserGlowSprite: {fileID: 9008666059294970599, guid: 773420219ba42476598edad3e01384ac, type: 3}
-  laserMaterial: {fileID: 2100000, guid: b3470157765ec41a6aba67d5f360f3f1, type: 2}
   _cylinder: {fileID: 3977221516601599719}
   _glow: {fileID: 5747891094568049099}
 --- !u!114 &3475049374207461500
@@ -4994,8 +4992,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad108e43ad0fb4be9b307c6ceb7d675e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePerSecond: 25
+  decal: {fileID: 2194247665895638877, guid: 1ecfcc6a507a941e7b176757958ff343, type: 3}
+  damagePerSecond: 10
   maxWidth: 0.25
+  speedMultiplier: 100
+  _ignoreLayers:
+    serializedVersion: 2
+    m_Bits: 64
   _collisionParticleSystem: {fileID: 9069267337475931504}
   _collisionAudioSource: {fileID: 2148621195378094972}
 --- !u!114 &2075653733361932193
@@ -5024,7 +5027,7 @@ GameObject:
   - component: {fileID: 4407626006756595800}
   - component: {fileID: 1974413957499103645}
   - component: {fileID: 8742853840743925705}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LaserBeam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5111,7 +5114,7 @@ GameObject:
   - component: {fileID: 6180743093317016526}
   - component: {fileID: 2148621195378094972}
   - component: {fileID: 3713389102194423221}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CollisionAudioSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5257,7 +5260,7 @@ GameObject:
   - component: {fileID: 7822385027769171499}
   - component: {fileID: 562845088918430675}
   - component: {fileID: 2546994106739812744}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LaserGlowSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5272,7 +5275,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5747891094568049099}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.95709836, z: 0, w: -0.2897634}
+  m_LocalRotation: {x: 0, y: 0.8542326, z: 0, w: -0.51989096}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.75, y: 0.4, z: 1.75}
   m_ConstrainProportionsScale: 0
@@ -5354,6 +5357,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1468603755885200992}
     m_Modifications:
+    - target: {fileID: 838586881994634102, guid: 339a79db00afe4e9dbe39a4255161ab4, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4869809964907187416, guid: 339a79db00afe4e9dbe39a4255161ab4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -5397,6 +5404,14 @@ PrefabInstance:
     - target: {fileID: 5489896783497655318, guid: 339a79db00afe4e9dbe39a4255161ab4, type: 3}
       propertyPath: m_Name
       value: CrystalSuperweaponCollision
+      objectReference: {fileID: 0}
+    - target: {fileID: 5489896783497655318, guid: 339a79db00afe4e9dbe39a4255161ab4, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8233226865324728325, guid: 339a79db00afe4e9dbe39a4255161ab4, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

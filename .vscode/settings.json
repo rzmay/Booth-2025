@@ -25,13 +25,13 @@
   "csharpfixformat.sort.usings.enabled": true,
 
   // Omnisharp-specific configurations
-  "omnisharp.enableEditorConfigSupport": true, // Use .editorconfig for consistency
-  "omnisharp.organizeImportsOnFormat": true, // Organize imports when formatting
+  "omnisharp.enableEditorConfigSupport": true, // Organize imports when formatting
 
   // Miscellaneous
   "explorer.autoReveal": false, // Prevent Unity file reveal spam in VSCode
   "debug.unity": {
     "useUnityDebugger": true // Use Unity Debugger when attaching
   },
-  "dotnet.defaultSolution": "Booth 2025.sln"
+  "dotnet.defaultSolution": "Booth 2025.sln",
+  "dotnet.formatting.organizeImportsOnFormat": true
 }

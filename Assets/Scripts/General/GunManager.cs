@@ -2,9 +2,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class GunManager : MonoBehaviour
 {
+
   [SerializeField]
   private List<GameObject> _guns = new();
 
@@ -16,14 +18,14 @@ public class GunManager : MonoBehaviour
 
   void Start()
   {
-    _switchAction.action.performed += OnSwitchAction;
+    if (_switchAction) _switchAction.action.performed += OnSwitchAction;
 
     InstantiateCurrent();
   }
 
   void OnDestroy()
   {
-    _switchAction.action.performed -= OnSwitchAction;
+    if (_switchAction) _switchAction.action.performed -= OnSwitchAction;
     DestroyCurrent();
   }
 
@@ -40,6 +42,14 @@ public class GunManager : MonoBehaviour
   {
     Destroy(_currentInstance);
     _currentInstance = null;
+  }
+
+  public void SetGun(int index)
+  {
+    if (index > 0 && index < _guns.Count) _gunIndex = index;
+
+    Debug.Log($"Set gun: {_guns[_gunIndex].name}");
+    InstantiateCurrent();
   }
 
   private void OnSwitchAction(InputAction.CallbackContext obj)

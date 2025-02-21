@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3151023809737933419}
   - component: {fileID: 6238250216273459105}
   - component: {fileID: 1100304937911246214}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,8 +44,8 @@ Light:
   serializedVersion: 11
   m_Type: 2
   m_Color: {r: 0.5, g: 0.91726613, b: 1, a: 1}
-  m_Intensity: 5
-  m_Range: 1
+  m_Intensity: 0.25
+  m_Range: 21
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -112,7 +112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 3
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 1
   m_LightLayerMask: 1
   m_RenderingLayers: 1
   m_CustomShadowLayers: 0
@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 4712643963759620684}
   - component: {fileID: 677072417249647280}
   - component: {fileID: 4469860740763685371}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4967,7 +4967,7 @@ GameObject:
   - component: {fileID: 2893434304347796897}
   - component: {fileID: 11550672725739754}
   - component: {fileID: 9174986074272382583}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: StandardIssueBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5006,6 +5006,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0da3345b5627444bc9e95f1de7a6d84c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  decal: {fileID: 2194247665895638877, guid: fa7e89c67ff634f598cc0b76fbb626cc, type: 3}
   _collisionParticleSystem: {fileID: 433697701981676734, guid: 83dde7f06173a43e1a48af51549a33dd, type: 3}
   _collisionAudio: {fileID: 8300000, guid: 11ae5f6a17c8e4d31adc7e4daa59f0ea, type: 3}
 --- !u!54 &2893434304347796897
@@ -5031,7 +5032,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 3
@@ -5048,13 +5049,13 @@ SphereCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.1
+  m_Radius: 0.2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &9174986074272382583
 MonoBehaviour:
@@ -5084,7 +5085,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1502742892725609298}
   - component: {fileID: 6302166860692736351}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5232,7 +5233,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7314081460651295075}
   - component: {fileID: 6057328053791155693}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5381,7 +5382,7 @@ GameObject:
   - component: {fileID: 1882328488519267152}
   - component: {fileID: 743286555133761033}
   - component: {fileID: 7859803299355270388}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}

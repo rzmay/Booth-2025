@@ -3,8 +3,11 @@ using UnityEngine;
 [RequireComponent(typeof(DetachParticleSystems))] // Required even if unused to avoid null checks
 public class RaycastBullet : Bullet
 {
-    [SerializeField]
+
     public float speedMultiplier = 100f; // Used in calculating force -- highkey replace with boolean operation later
+
+    [SerializeField]
+    private LayerMask _ignoreLayers;
 
     [SerializeField]
     private ParticleSystem _collisionParticleSystem;
@@ -27,7 +30,7 @@ public class RaycastBullet : Bullet
     private void Fire()
     {
         RaycastHit hit;
-        if (!Physics.Raycast(transform.position, transform.forward, out hit)) return;
+        if (!Physics.Raycast(transform.position, transform.forward, out hit, 1000f, ~_ignoreLayers)) return;
 
         // Spawn the particle system
         Instantiate(_collisionParticleSystem.gameObject, hit.point, Quaternion.LookRotation(hit.normal));
@@ -36,7 +39,7 @@ public class RaycastBullet : Bullet
         AudioUtility.PlaySpatialClipAtPointWithVariation(_collisionAudio, hit.point);
 
         // Yuhhhh
-        ApplyDamage(hit.transform.gameObject);
+        ApplyDamage(hit.transform.gameObject, hit.normal);
 
         // And then die!!!!!!
         _detachParticleSystems.Detach();

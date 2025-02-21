@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2540260109567880862}
   - component: {fileID: 4676286683071114045}
   - component: {fileID: 4657607965603841035}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NoisyCricketBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,6 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f91fde0b121ee46718e8382c8334f1cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  decal: {fileID: 2194247665895638877, guid: 59b1275ba62914e01a47ca47bb4a0841, type: 3}
+  speedMultiplier: 100
+  _ignoreLayers:
+    serializedVersion: 2
+    m_Bits: 64
   _collisionParticleSystem: {fileID: 2304159471569535306, guid: 9d5cdbdd2382845c088ab527b910a63f, type: 3}
   _collisionAudio: {fileID: 8300000, guid: 8b78fa067c9b3430a9f4a6ec7dbd1bf2, type: 3}
 --- !u!114 &4657607965603841035

@@ -4,6 +4,8 @@ public class PlasmaCannonBullet : Bullet
 {
     public float minSize = 0.25f;
     public float sizeRatio = 0.5f;
+
+    public float shockwaveSizeRatio = 2f;
     public float damageRatio = 10f;
     public float volumeRatio = 2f;
 
@@ -32,17 +34,31 @@ public class PlasmaCannonBullet : Bullet
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
         // Spawn the particle system
         GameObject shockwaveObject = Instantiate(_shockwavePrefab.gameObject, transform.position, transform.rotation);
         PlasmaCannonBulletShockwave shockwave = shockwaveObject.GetComponent<PlasmaCannonBulletShockwave>();
         shockwave.damage = damage * damageRatio;
-        shockwave.transform.localScale = transform.localScale;
-        Debug.Log($"[Shockwave] Spawning shockwave with scale {transform.localScale.x}");
+        shockwave.transform.localScale = (transform.localScale * shockwaveSizeRatio) / sizeRatio;
+        Debug.Log($"[Shockwave] Spawning shockwave with scale {transform.localScale.magnitude}");
+
+        Vector3 normal = collision.contacts.Length == 0 ? -transform.rotation.eulerAngles : collision.contacts[0].normal;
+
+        // Spawn the decal
+        // Rotate randomly around z axis
+        Quaternion rotation = Quaternion.Euler(
+            -normal.x,
+            -normal.y,
+            Random.Range(0f, 360f)
+        );
+
+        // Instantiate the decal
+        GameObject decalObject = Instantiate(decal.gameObject, transform.position, rotation);
+        decalObject.transform.localScale = shockwave.transform.localScale; // Copy shockwave scale
 
         // Play the sound
-        AudioUtility.PlaySpatialClipAtPointWithVariation(_collisionAudio, transform.position, 1f + damage * volumeRatio);
+        AudioUtility.PlaySpatialClipAtPointWithVariation(_collisionAudio, transform.position, 1f + (damage * damageRatio) * volumeRatio);
 
         // And then die!!!!!!
         _detachParticleSystems.Detach();

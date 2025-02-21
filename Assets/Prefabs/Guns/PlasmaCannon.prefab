@@ -352,7 +352,7 @@ MonoBehaviour:
   cooldownRatio: 0
   chargeDamping: 2
   pitchRatio: 1
-  volumeRatio: 0.5
+  volumeRatio: 1
   bulletIsChild: 0
   _bullet: {fileID: 8006190057754110462, guid: 2b0a81d49f8e247aea29980fadf62dd0, type: 3}
   _fireSound: {fileID: 8300000, guid: 7628ab6e1f4584c6d9e3b123cb9e2e08, type: 3}

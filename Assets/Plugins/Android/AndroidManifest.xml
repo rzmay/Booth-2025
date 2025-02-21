@@ -14,9 +14,19 @@
     <meta-data android:name="com.oculus.ossplash.background" android:value="passthrough-contextual" />
     <meta-data android:name="com.oculus.telemetry.project_guid" android:value="f19ff54c-1707-47d4-875f-3b0dbc93af22" />
     <meta-data android:name="com.oculus.supportedDevices" android:value="quest3s" tools:replace="android:value" />
+    <!-- For Passthrough access -->
+    <service
+       android:name="com.t34400.mediaprojectionlib.core.MediaProjectionService"
+       android:foregroundServiceType="mediaProjection"
+       android:stopWithTask="true" />
   </application>
+  <uses-feature
+    android:name="com.oculus.feature.BOUNDARYLESS_APP"
+    android:required="true" />
   <uses-feature android:name="android.hardware.vr.headtracking" android:version="1" android:required="true" />
   <uses-permission android:name="com.oculus.permission.USE_ANCHOR_API" />
   <uses-feature android:name="com.oculus.feature.PASSTHROUGH" android:required="true" />
   <uses-permission android:name="com.oculus.permission.USE_SCENE" />
+  <!-- For Passthrough access -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 </manifest>

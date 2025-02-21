@@ -10,6 +10,9 @@ public class LaserBullet : Bullet
     public float speedMultiplier = 100f; // Used for force calculation
 
     [SerializeField]
+    public LayerMask _ignoreLayers;
+
+    [SerializeField]
     private ParticleSystem _collisionParticleSystem;
 
     [SerializeField]
@@ -50,7 +53,7 @@ public class LaserBullet : Bullet
         // Raycast to find hit
         RaycastHit hit;
         float length = 0f;
-        if (!Physics.Raycast(transform.position, transform.forward, out hit))
+        if (!Physics.Raycast(transform.position, transform.forward, out hit, 1000f, ~_ignoreLayers))
         {
             length = 100; // Long as distance out of rendering range
             _collisionAudioSource.Stop(); // Stop playing the collision audio
@@ -69,12 +72,11 @@ public class LaserBullet : Bullet
 
             // Apply damage
             float damageRatio = (damagePerSecond * Time.deltaTime) / damage; // Divide by damage to make constant
-            ApplyDamage(hit.transform.gameObject, damageRatio);
+            ApplyDamage(hit.transform.gameObject, hit.normal, damageRatio);
         }
 
         // Send to laser renderer
         _laserRenderer.length = length;
-        Debug.Log($"[LaserBullet] Time remaining: {_timeRemaining}, Width coefficient: {(1f - Mathf.Pow(1f - Mathf.Max(1f, _timeRemaining), 2))}, max width: {maxWidth}");
-        _laserRenderer.width = maxWidth * (1f - Mathf.Pow(1f - Mathf.Max(1f, _timeRemaining), 2));
+        _laserRenderer.width = maxWidth * (1f - Mathf.Pow(1f - Mathf.Clamp(_timeRemaining, 0f, 1f), 3));
     }
 }

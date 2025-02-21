@@ -24,8 +24,10 @@ public class StandardIssueBullet : Bullet
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
+        GameObject other = collision.gameObject;
+
         // Spawn the particle system
         Instantiate(_collisionParticleSystem.gameObject, transform.position, transform.rotation);
 
@@ -33,7 +35,8 @@ public class StandardIssueBullet : Bullet
         AudioUtility.PlaySpatialClipAtPointWithVariation(_collisionAudio, transform.position);
 
         // Apply damage and physics
-        ApplyDamage(other.gameObject);
+        Vector3 normal = collision.contacts.Length == 0 ? -transform.rotation.eulerAngles : collision.contacts[0].normal;
+        ApplyDamage(other.gameObject, normal);
 
         // And then die!!!!!!
         _detachParticleSystems.Detach();

@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.ARSubsystems;
+using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class FloorSpawner : DelayableMonoBehaviour
 {
@@ -12,172 +13,148 @@ public class FloorSpawner : DelayableMonoBehaviour
   public class TimedSpawn
   {
     public GameObject prefab;
-    public float spawnProbability;
+    public AnimationCurve spawnProbability;
+    public int spawnDuration;
   }
 
   [System.Serializable]
-  public class StartupSpawn
+  public class ScheduledSpawn
   {
     public GameObject prefab;
+    public float time;
     public int minSpawnCount;
     public int maxSpawnCount;
+    [NonSerialized] public bool spawned;
   }
 
   // Public fields for configuration
   public List<TimedSpawn> TimedSpawns = new List<TimedSpawn>();
-  public List<StartupSpawn> StartupSpawns = new List<StartupSpawn>();
+  public List<ScheduledSpawn> ScheduledSpawns = new List<ScheduledSpawn>();
   [SerializeField] private int _maxAttempts = 50;
-  [SerializeField] private float _startupDelay = 0.5f;
+  [SerializeField] private LayerMask _obstructionMask = Physics.AllLayers;
 
-  private List<ARPlane> _trackedPlanes = new List<ARPlane>();
-
-  private bool _spawnedStartupObjects = false;
+  private float _startTime;
 
   void Awake()
   {
     Instance = this;
-    Debug.Log("[Floor Spawner] awake");
+  }
+
+  void Start()
+  {
+    _startTime = Time.time;
   }
 
   void Update()
   {
-    foreach (var spawnConfig in TimedSpawns)
-    {
-      if (Random.value < (spawnConfig.spawnProbability * Time.deltaTime))
-      {
-        TrySpawnObjectOnFloor(spawnConfig.prefab);
-      }
-    }
-  }
+    float timeSinceStart = Time.time - _startTime;
 
-  public void OnPlanesChanged(ARTrackablesChangedEventArgs<ARPlane> changes)
-  {
-    if (changes.added.Count > 0)
-    {
-      Debug.Log($"[Floor Spawner] {changes.added.Count} planes added");
-      foreach (var plane in changes.added)
-      {
-        OnPlaneAdded(plane);
-      }
-    }
-  }
-
-  private void OnPlaneAdded(ARPlane plane)
-  {
-    if (plane.classifications == PlaneClassifications.Floor)
-    {
-      Debug.Log("[Floor Spawner] Floor added");
-      _trackedPlanes.Add(plane);
-
-      if (!_spawnedStartupObjects)
-      {
-        _spawnedStartupObjects = true;
-
-        Debug.Log("[Floor Spawner] Hell yeah adding stuff");
-        // Quick and nasty method of waiting for all planes & stuff to be instantiated
-        Delay(delegate () { SpawnStartupObjects(); }, _startupDelay);
-      }
-    }
-  }
-
-  private void SpawnStartupObjects()
-  {
-    Debug.Log("[Floor Spawner] Attempting spawn startup objects");
-    foreach (var spawnConfig in StartupSpawns)
+    foreach (var spawnConfig in ScheduledSpawns.Where(config => timeSinceStart >= config.time && !config.spawned))
     {
       int count = Random.Range(spawnConfig.minSpawnCount, spawnConfig.maxSpawnCount + 1);
       for (int i = 0; i < count; i++)
       {
         TrySpawnObjectOnFloor(spawnConfig.prefab);
       }
-    }
-  }
 
-  private void TrySpawnObjectOnFloor(GameObject prefab)
-  {
-    // Early return if no floor planes exist
-    if (_trackedPlanes.Count == 0)
-    {
-      Debug.LogWarning("No floor planes available for spawning.");
-      return;
+      // Set spawned regardless of success to avoid endless attempts -- for more flexible implementations, add a retry offset
+      spawnConfig.spawned = true;
     }
 
-    for (int attempt = 0; attempt < _maxAttempts; attempt++)
+    foreach (var spawnConfig in TimedSpawns)
     {
-      ARPlane randomPlane = _trackedPlanes[Random.Range(0, _trackedPlanes.Count)];
-      Vector3? location = GetValidSpawnLocation(randomPlane, prefab, out Quaternion rotation);
-
-      if (location.HasValue)
+      float durationPercentage = timeSinceStart / spawnConfig.spawnDuration;
+      if (Random.value < (spawnConfig.spawnProbability.Evaluate(durationPercentage) * Time.deltaTime))
       {
-        SpawnObject(prefab, location.Value, rotation);
-        return; // Successfully spawned, no need to continue
+        TrySpawnObjectOnFloor(spawnConfig.prefab);
       }
     }
-
-    Debug.LogWarning($"Failed to find an unobstructed spot for {prefab.name} after {_maxAttempts} attempts.");
   }
 
-  private Vector3? GetValidSpawnLocation(ARPlane plane, GameObject prefab, out Quaternion validRotation)
+  private bool TrySpawnObjectOnFloor(GameObject prefab)
   {
-    validRotation = prefab.transform.rotation;
+    Vector3? location = GetValidSpawnLocation(prefab);
 
-    for (int attempt = 0; attempt < _maxAttempts; attempt++)
+    if (location.HasValue)
     {
-      Vector3 randomPoint = GetRandomPointOnPlane(plane, prefab);
-
-      // Generate a random Y-axis rotation
       float randomYaw = Random.Range(0f, 360f);
-      Quaternion randomRotation = prefab.transform.rotation * Quaternion.Euler(Vector3.up * randomYaw);
+      Quaternion rotation = prefab.transform.rotation * Quaternion.Euler(Vector3.up * randomYaw);
 
-      if (IsSpotUnobstructed(randomPoint, prefab, randomRotation))
-      {
-        validRotation = randomRotation;
-        return randomPoint;
-      }
+      SpawnObject(prefab, location.Value, rotation);
+      return true; // Successfully spawned, no need to continue
+    }
+
+    Debug.LogWarning($"[FloorSpawner] Failed to find an unobstructed spot for {prefab.name} after {_maxAttempts} attempts.");
+    return false;
+  }
+
+  private Vector3? GetValidSpawnLocation(GameObject prefab)
+  {
+    NavMeshTriangulation triangulation = NavMesh.CalculateTriangulation();
+
+    for (int attempt = 0; attempt < _maxAttempts; attempt++)
+    {
+      Vector3 randomPoint = GetRandomPoint(triangulation);
+
+      if (IsSpotUnobstructed(randomPoint, prefab)) return randomPoint;
     }
 
     return null; // No valid location found
   }
 
-  private Vector3 GetRandomPointOnPlane(ARPlane plane, GameObject prefab)
+  public static Vector3 GetRandomPoint(NavMeshTriangulation triangulation)
   {
-    var planeCenter = plane.center;
-    var planeSize = plane.size;
-    BoxCollider collider = prefab.GetComponent<BoxCollider>();
+    // Each triangle is defined by 3 consecutive indices.
+    int triangleCount = triangulation.indices.Length / 3;
 
-    float spaceBuffer = Mathf.Max(collider.size.x, collider.size.z);
+    // Pick a random triangle index.
+    int randomTriangle = Random.Range(0, triangleCount);
+    int index = randomTriangle * 3;
 
-    float randomX = Random.Range(-(planeSize.x - spaceBuffer) / 2, (planeSize.x - spaceBuffer) / 2);
-    float randomZ = Random.Range(-(planeSize.y - spaceBuffer) / 2, (planeSize.y - spaceBuffer) / 2);
+    // Get the triangle's vertex indices.
+    int indexA = triangulation.indices[index];
+    int indexB = triangulation.indices[index + 1];
+    int indexC = triangulation.indices[index + 2];
 
-    return planeCenter + new Vector3(randomX, 0.1f, randomZ);
-  }
+    // Retrieve the actual vertices.
+    Vector3 A = triangulation.vertices[indexA];
+    Vector3 B = triangulation.vertices[indexB];
+    Vector3 C = triangulation.vertices[indexC];
 
-  public bool IsSpotUnobstructed(Vector3 position, GameObject prefab, Quaternion rotation)
-  {
-    // Retrieve the BoxCollider from the prefab
-    BoxCollider prefabCollider = prefab.GetComponent<BoxCollider>();
+    // Generate random barycentric coordinates.
+    float r1 = Random.value;
+    float r2 = Random.value;
 
-    if (prefabCollider == null)
+    // Ensure the point lies inside the triangle.
+    if (r1 + r2 > 1f)
     {
-      Debug.LogWarning($"Prefab {prefab.name} does not have a BoxCollider!");
-      return false;
+      r1 = 1f - r1;
+      r2 = 1f - r2;
     }
 
-    // Calculate the world space half-extents
-    Vector3 halfExtents = Vector3.Scale(prefabCollider.size / 2, prefab.transform.localScale); // Component-wise scaling
+    // Return the random point inside the triangle.
+    return A + r1 * (B - A) + r2 * (C - A);
+  }
 
-    // Calculate the world space center
-    Vector3 worldCenter = position + rotation * Vector3.Scale(prefabCollider.center, prefab.transform.localScale);
+  public bool IsSpotUnobstructed(Vector3 position, GameObject prefab)
+  {
+    // Retrieve the BoxCollider from the prefab
+    Collider prefabCollider = prefab.GetComponentInChildren<Collider>();
 
-    // Perform the overlap box check
-    Collider[] hitColliders = Physics.OverlapBox(worldCenter, halfExtents, rotation);
+    if (prefabCollider == null) return false;
 
-    foreach (var hitCollider in hitColliders)
+    Collider[] hitColliders = Physics.OverlapBox(
+        prefabCollider.bounds.center,
+        prefabCollider.bounds.extents,
+        Quaternion.identity, // since bounds are axis-aligned
+        _obstructionMask
+    );
+
+    // Check for obstructions
+    foreach (Collider collider in hitColliders)
     {
-      // Check if the hit collider belongs to any of the tracked floor planes
-      ARPlane plane = hitCollider.GetComponent<ARPlane>();
-      if (plane == null || !_trackedPlanes.Contains(plane)) return false;
+      // Ignore colliding with the navmesh itself
+      if (!Physics.GetIgnoreLayerCollision(prefab.layer, collider.gameObject.layer)) return false;
     }
 
     // No obstructions found

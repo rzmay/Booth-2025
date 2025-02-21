@@ -68,9 +68,10 @@ public class PlasmaCannonBulletShockwave : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // Damage enemy on trigger enter
-        Damageable enemy = other.GetComponent<Damageable>();
-        if (enemy && _hits.Contains(enemy))
+        Damageable enemy = other.GetComponentInParent<Damageable>();
+        if (enemy && !_hits.Contains(enemy))
         {
+            Debug.Log($"[PlasmaCannonBulletShockwave] Damageable found, applying damage {damage}");
             enemy.health -= _damage;
             _hits.Add(enemy);
         }
