@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3724064728430820944
+--- !u!1 &2784085509121165639
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7973576962550376306}
-  - component: {fileID: 3255500553991105482}
-  - component: {fileID: 3926548212664299841}
+  - component: {fileID: 3945487545281513923}
+  - component: {fileID: 891259344265126811}
+  - component: {fileID: 8526980654000111906}
   m_Layer: 0
   m_Name: Coord
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!4 &7973576962550376306
+--- !u!4 &3945487545281513923
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3724064728430820944}
+  m_GameObject: {fileID: 2784085509121165639}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,21 +33,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6730889152373200306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3255500553991105482
+--- !u!33 &891259344265126811
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3724064728430820944}
+  m_GameObject: {fileID: 2784085509121165639}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &3926548212664299841
+--- !u!23 &8526980654000111906
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3724064728430820944}
+  m_GameObject: {fileID: 2784085509121165639}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -97,9 +97,9 @@ GameObject:
   - component: {fileID: 6730889152373200306}
   - component: {fileID: 9087669066098906484}
   - component: {fileID: 995704554852456693}
-  - component: {fileID: 8404303515632907344}
+  - component: {fileID: 9189748850928994316}
   m_Layer: 0
-  m_Name: SI-4
+  m_Name: Reverberating Carbonizer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -118,7 +118,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7973576962550376306}
+  - {fileID: 3945487545281513923}
+  - {fileID: 7307245708354424920}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &9087669066098906484
@@ -234,7 +235,7 @@ MonoBehaviour:
   gainBoostDb: 0
   enableAcoustics: 1
   reverbSendDb: 0
---- !u!114 &8404303515632907344
+--- !u!114 &9189748850928994316
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -243,14 +244,80 @@ MonoBehaviour:
   m_GameObject: {fileID: 8134152505571690451}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9ecfc337212c4586aed666f593270d7, type: 3}
+  m_Script: {fileID: 11500000, guid: 42575cd22e71942609a8517a231ce04d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0.5
-  rate: 0.5
+  damage: 0.1
+  rate: 0.1
   bulletSpeed: 20
-  _bullet: {fileID: 6668291272654263263, guid: 9eca42c56aa3c4c9ba1f61ed1efc2070, type: 3}
-  _fireSound: {fileID: 8300000, guid: eedec73126a6746f58c7105ed07c24a4, type: 3}
-  _reloadSound: {fileID: 0}
-  _fireParticleSystem: {fileID: 3119552674235243503, guid: d04f303c32e624bc28165339d5d5e784, type: 3}
-  _fireAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  _bullet: {fileID: 4451374821194322331, guid: 250ac4afd127a47e9b70f08ced1f2517, type: 3}
+  _fireSound: {fileID: 8300000, guid: 271b218dd50c34041896ba53b006e302, type: 3}
+  _fireParticleSystem: {fileID: 2376012596286371902}
+  _fireAction: {fileID: 2122521244468027932, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+--- !u!1001 &2809550301257129088
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6730889152373200306}
+    m_Modifications:
+    - target: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5489896783497655318, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+      propertyPath: m_Name
+      value: ReverberatingCarbonizerFire
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+--- !u!198 &2376012596286371902 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 433697701981676734, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+  m_PrefabInstance: {fileID: 2809550301257129088}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7307245708354424920 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4869809964907187416, guid: 1b741597e5c544885b36c9a9665cccd9, type: 3}
+  m_PrefabInstance: {fileID: 2809550301257129088}
+  m_PrefabAsset: {fileID: 0}

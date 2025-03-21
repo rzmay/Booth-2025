@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 
     void OnDamage(float health, float damage, bool _)
     {
-        MenuController.SetHealth(health);
+        MenuController.SetHealth(health / _damageable.health);
 
         if (health <= 0)
         {
