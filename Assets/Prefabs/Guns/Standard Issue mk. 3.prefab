@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &455958889281331938
+--- !u!1 &3412132800724104465
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4019449933262523473}
-  - component: {fileID: 143993275292188529}
-  - component: {fileID: 9167403926162756862}
+  - component: {fileID: 4473834570094436131}
+  - component: {fileID: 8346654077511897151}
+  - component: {fileID: 3834101757385873662}
   m_Layer: 0
   m_Name: Coord
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!4 &4019449933262523473
+--- !u!4 &4473834570094436131
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 455958889281331938}
+  m_GameObject: {fileID: 3412132800724104465}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,21 +33,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6730889152373200306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &143993275292188529
+--- !u!33 &8346654077511897151
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 455958889281331938}
+  m_GameObject: {fileID: 3412132800724104465}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &9167403926162756862
+--- !u!23 &3834101757385873662
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 455958889281331938}
+  m_GameObject: {fileID: 3412132800724104465}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -95,12 +95,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6730889152373200306}
-  - component: {fileID: 3699368084584365653}
   - component: {fileID: 9087669066098906484}
   - component: {fileID: 995704554852456693}
-  - component: {fileID: 7056708103442479077}
+  - component: {fileID: 8404303515632907344}
   m_Layer: 0
-  m_Name: PlasmaCannon
+  m_Name: Standard Issue mk. 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -119,106 +118,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4019449933262523473}
+  - {fileID: 4473834570094436131}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &3699368084584365653
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8134152505571690451}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 3597321cc5db8484b8b77600ecac860f, type: 2}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 1
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!82 &9087669066098906484
 AudioSource:
   m_ObjectHideFlags: 0
@@ -332,7 +234,7 @@ MonoBehaviour:
   gainBoostDb: 0
   enableAcoustics: 1
   reverbSendDb: 0
---- !u!114 &7056708103442479077
+--- !u!114 &8404303515632907344
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -341,22 +243,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 8134152505571690451}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 303a55c8e0646449490c7bcfaccd2410, type: 3}
+  m_Script: {fileID: 11500000, guid: a9ecfc337212c4586aed666f593270d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minChargeTime: 0.2
-  rate: 1
-  speed: 8
-  maxCharge: Infinity
-  chargeRatio: 0.5
-  cooldownRatio: 0
-  chargeDamping: 2
-  pitchRatio: 1
-  volumeRatio: 1
-  bulletIsChild: 0
-  _bullet: {fileID: 8006190057754110462, guid: 2b0a81d49f8e247aea29980fadf62dd0, type: 3}
-  _fireSound: {fileID: 8300000, guid: 7628ab6e1f4584c6d9e3b123cb9e2e08, type: 3}
-  _chargePitchSound: {fileID: 8300000, guid: 49485bc2f52484505a02db3e9ab19ae3, type: 3}
-  _chargeVolumeSound: {fileID: 8300000, guid: e119c4d6976d94ec4b0a24962055e81b, type: 3}
-  _fireParticleSystem: {fileID: 2304159471569535306, guid: 609e934ea50dd4147ae5d155edf950b3, type: 3}
-  _chargeAction: {fileID: 2122521244468027932, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  damage: 0.32
+  rate: 0.2
+  bulletSpeed: 12.5
+  _bullet: {fileID: 5043894709895900993, guid: 7582ad5e3ba6f4a8cb0a77b75d27ba6a, type: 3}
+  _fireSound: {fileID: 8300000, guid: eedec73126a6746f58c7105ed07c24a4, type: 3}
+  _reloadSound: {fileID: 0}
+  _fireParticleSystem: {fileID: 3119552674235243503, guid: d04f303c32e624bc28165339d5d5e784, type: 3}
+  _fireAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}

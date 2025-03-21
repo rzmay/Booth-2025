@@ -14,18 +14,15 @@ public class Damageable : DelayableMonoBehaviour
     public delegate void OnDamage(float health, float damage, bool isCritical);
     public OnDamage onDamage;
 
-    public float health
-    {
-        get { return _health; }
-    }
+    public float health = 10f;
 
-    [SerializeField]
-    private float _health = 10f;
+    private float _health;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        // Set health to max health
+        _health = health;
     }
 
     // Update is called once per frame
