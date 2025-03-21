@@ -54,6 +54,9 @@ public class StandardGun : MonoBehaviour
 
         _timeUntilReady = Mathf.Max(0, _timeUntilReady - Time.deltaTime);
 
+        // Set menu cooldown
+        MenuController.SetCooldown(_timeUntilReady / rate);
+
         if (_reloadSound != null && !_relaodSoundPlayed && _timeUntilReady <= _reloadSound.length)
         {
             _audioSource.PlayOneShot(_reloadSound, 1);
@@ -66,7 +69,7 @@ public class StandardGun : MonoBehaviour
         // Don't fire if not ready yet....
         if (_timeUntilReady > 0) return;
 
-        _timeUntilReady += rate;
+        _timeUntilReady = rate;
 
         if (_reloadSound) _relaodSoundPlayed = false;
 

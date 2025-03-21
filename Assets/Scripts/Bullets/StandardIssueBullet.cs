@@ -36,7 +36,7 @@ public class StandardIssueBullet : Bullet
 
         // Apply damage and physics
         Vector3 normal = collision.contacts.Length == 0 ? -transform.rotation.eulerAngles : collision.contacts[0].normal;
-        ApplyDamage(other.gameObject, normal);
+        ApplyDamage(collision.collider, normal);
 
         // And then die!!!!!!
         _detachParticleSystems.Detach();

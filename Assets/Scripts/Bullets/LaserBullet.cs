@@ -72,7 +72,7 @@ public class LaserBullet : Bullet
 
             // Apply damage
             float damageRatio = (damagePerSecond * Time.deltaTime) / damage; // Divide by damage to make constant
-            ApplyDamage(hit.transform.gameObject, hit.normal, damageRatio);
+            ApplyDamage(hit.collider, hit.normal, damageRatio);
         }
 
         // Send to laser renderer

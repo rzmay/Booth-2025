@@ -1,14 +1,22 @@
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Damageable : DelayableMonoBehaviour
 {
-    public delegate void OnDamage(float health, float damage);
+    [System.Serializable]
+    public class HitPoint
+    {
+        public Collider collider;
+        public float multiplier;
+    }
+    [SerializeField] public List<HitPoint> hitPoints = new();
+    public delegate void OnDamage(float health, float damage, bool isCritical);
     public OnDamage onDamage;
 
     public float health
     {
         get { return _health; }
-        set { SetHealth(value); }
     }
 
     [SerializeField]
@@ -26,14 +34,22 @@ public class Damageable : DelayableMonoBehaviour
 
     }
 
-    void SetHealth(float value)
+    public void Damage(float damage, Collider collider = null)
     {
-        float damage = _health - value;
-        _health = value;
+        bool isCritical = false;
+        float value = damage;
+        if (collider)
+        {
+            HitPoint hitPoint = hitPoints.Find(h => h.collider == collider);
+            if (hitPoint != null)
+            {
+                value *= hitPoint.multiplier;
+                isCritical = hitPoint.multiplier > 1;
+            }
+        }
 
-        Debug.Log($"[Damageable] Took damage {damage}, at health {health}");
+        _health -= damage;
 
-        // Any onDamage logic
-        onDamage?.Invoke(health, damage);
+        onDamage?.Invoke(health, value, isCritical);
     }
 }

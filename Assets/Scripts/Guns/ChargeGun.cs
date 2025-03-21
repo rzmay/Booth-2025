@@ -18,6 +18,9 @@ public class ChargeGun : DelayableMonoBehaviour
     public float volumeRatio = 1f;
     public bool bulletIsChild = false;
 
+    // Used for menu display
+    public float externalDamage = 1f;
+
     // Calculate charge from charge time
     public float charge
     {
@@ -90,6 +93,9 @@ public class ChargeGun : DelayableMonoBehaviour
     {
         _timeUntilReady = Mathf.Max(0, _timeUntilReady - Time.deltaTime);
 
+        // Set menu cooldown
+        MenuController.SetCooldown(_timeUntilReady / rate);
+
         // Charge
         if (_isCharging)
         {
@@ -101,6 +107,9 @@ public class ChargeGun : DelayableMonoBehaviour
 
             if (!_chargePitchSource.isPlaying) _chargePitchSource.Play();
             if (!_chargeVolumeSource.isPlaying) _chargeVolumeSource.Play();
+
+            // Set menu charge
+            MenuController.SetCharge(_chargeTime);
         }
     }
     private void OnChargeAction(InputAction.CallbackContext obj)
@@ -148,5 +157,8 @@ public class ChargeGun : DelayableMonoBehaviour
         // Reset vars
         _isCharging = false;
         _chargeTime = 0;
+
+        // Reset menu charge
+        MenuController.SetCharge(0);
     }
 }

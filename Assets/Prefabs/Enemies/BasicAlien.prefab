@@ -121,6 +121,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: -3919144622627161780, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3919144622627161780, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: f2a2380bbe5b64a438728dd5014258cf, type: 2}
@@ -396,14 +400,14 @@ CapsuleCollider:
   m_Height: 1.4
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &2606262506140179463 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8548028513360189276, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
+--- !u!4 &1765817381448175466 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -3888138265249397711, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
   m_PrefabInstance: {fileID: 5948128470882650971}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &3294005751805358853 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -54791331365865378, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
+--- !u!4 &4061178894141074141 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7698846369121739142, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
   m_PrefabInstance: {fileID: 5948128470882650971}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &6794408488187737610 stripped
@@ -448,8 +452,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.2
-  m_Speed: 1
-  m_Acceleration: 1
+  m_Speed: 0.5
+  m_Acceleration: 0.25
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0.1
@@ -472,7 +476,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7478bb5480645c98fb72676cd39091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _health: 5
+  hitPoints: []
+  _health: 8
 --- !u!114 &5772287937772064036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485,11 +490,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ceee239efa72482790fc581bdad1a96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  points: 10
   attackRange: 0.5
   attackRate: 3
   attackDamage: 5
-  attackBone: {fileID: 3294005751805358853}
-  headBone: {fileID: 2606262506140179463}
+  attackBone: {fileID: 4061178894141074141}
+  headBone: {fileID: 1765817381448175466}
   projectile: {fileID: 0}
   projectileSpeed: 0
   projectileSpread: 0.1
+  _nextPhase: {fileID: 0}
+  _deathParticle: {fileID: 1009116710780634285, guid: 6c814b41725cd414f8b985f9f0beb749, type: 3}
+  _spawnSounds:
+  - {fileID: 8300000, guid: 67b66f7a3747b4cfdb0bdf8395690a99, type: 3}
+  _attackWindupSounds:
+  - {fileID: 8300000, guid: 8c964fa0e9ad244ed8a67edcfb8dccaf, type: 3}
+  _attackSounds: []
+  _hitSounds:
+  - {fileID: 8300000, guid: 060e5902a1855457db48416723f6bf32, type: 3}
+  - {fileID: 8300000, guid: a81f96770d7854b148a5ac418f9eee06, type: 3}
+  - {fileID: 8300000, guid: d1882b8a2a9bb42faafd1d8852a0064e, type: 3}
+  _criticalHitSounds: []
+  _deathSounds:
+  - {fileID: 8300000, guid: 468e5196abfb24360a7b4d3867a3dd11, type: 3}
+  - {fileID: 8300000, guid: b0fb5decaf37c4faf994502d890b54d7, type: 3}
+  - {fileID: 8300000, guid: cb34c019ac715481993a6d8698fa7ce5, type: 3}
+  _idleSounds:
+  - {fileID: 8300000, guid: 6603265245a2e4625a95aa5feef5b430, type: 3}
+  - {fileID: 8300000, guid: f8ddf88f969fc4cad9cc86a6430536ef, type: 3}
+  soundFrequency: 0.3

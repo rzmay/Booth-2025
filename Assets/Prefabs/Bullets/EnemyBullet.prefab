@@ -5006,7 +5006,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decal: {fileID: 2194247665895638877, guid: fa7e89c67ff634f598cc0b76fbb626cc, type: 3}
-  _collisionParticleSystem: {fileID: 433697701981676734, guid: 83dde7f06173a43e1a48af51549a33dd, type: 3}
+  _collisionParticleSystem: {fileID: 8795948770354716192, guid: 9142f00a090fc4499bc2423401eac7ea, type: 3}
   _collisionAudio: {fileID: 8300000, guid: 11ae5f6a17c8e4d31adc7e4daa59f0ea, type: 3}
 --- !u!54 &2893434304347796897
 Rigidbody:

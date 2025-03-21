@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class ReverberatingCarbonizerBullet : StandardIssueBullet
 {
-    protected void ApplyDamage(GameObject other, Vector3 normal)
+    protected void ApplyDamage(Collider collider, Vector3 normal)
     {
-        base.ApplyDamage(other, normal);
+        base.ApplyDamage(collider, normal);
 
         // Slow enemy
 

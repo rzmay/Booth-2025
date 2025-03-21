@@ -28,12 +28,15 @@ public class FloorSpawner : DelayableMonoBehaviour
   }
 
   // Public fields for configuration
-  public List<TimedSpawn> TimedSpawns = new List<TimedSpawn>();
-  public List<ScheduledSpawn> ScheduledSpawns = new List<ScheduledSpawn>();
+  public List<TimedSpawn> timedSpawns = new List<TimedSpawn>();
+  public List<ScheduledSpawn> scheduledSpawns = new List<ScheduledSpawn>();
   [SerializeField] private int _maxAttempts = 50;
   [SerializeField] private LayerMask _obstructionMask = Physics.AllLayers;
+  [SerializeField] private float _minPlayerDistance = 1f;
 
   private float _startTime;
+
+  private Player _player;
 
   void Awake()
   {
@@ -42,6 +45,13 @@ public class FloorSpawner : DelayableMonoBehaviour
 
   void Start()
   {
+    _player = FindFirstObjectByType<Player>();
+
+    _startTime = Time.time;
+  }
+
+  public void Restart()
+  {
     _startTime = Time.time;
   }
 
@@ -49,7 +59,7 @@ public class FloorSpawner : DelayableMonoBehaviour
   {
     float timeSinceStart = Time.time - _startTime;
 
-    foreach (var spawnConfig in ScheduledSpawns.Where(config => timeSinceStart >= config.time && !config.spawned))
+    foreach (var spawnConfig in scheduledSpawns.Where(config => timeSinceStart >= config.time && !config.spawned))
     {
       int count = Random.Range(spawnConfig.minSpawnCount, spawnConfig.maxSpawnCount + 1);
       for (int i = 0; i < count; i++)
@@ -61,7 +71,7 @@ public class FloorSpawner : DelayableMonoBehaviour
       spawnConfig.spawned = true;
     }
 
-    foreach (var spawnConfig in TimedSpawns)
+    foreach (var spawnConfig in timedSpawns)
     {
       float durationPercentage = timeSinceStart / spawnConfig.spawnDuration;
       if (Random.value < (spawnConfig.spawnProbability.Evaluate(durationPercentage) * Time.deltaTime))
@@ -77,8 +87,21 @@ public class FloorSpawner : DelayableMonoBehaviour
 
     if (location.HasValue)
     {
-      float randomYaw = Random.Range(0f, 360f);
-      Quaternion rotation = prefab.transform.rotation * Quaternion.Euler(Vector3.up * randomYaw);
+      // Face player if available
+      float yaw = 0;
+      if (_player)
+      {
+        Vector3 direction = _player.transform.position - transform.position;
+        Vector3 flatDirection = Vector3.ProjectOnPlane(direction, Vector3.up);
+
+        yaw = Vector3.SignedAngle(transform.forward, flatDirection, Vector3.up);
+      }
+      else
+      {
+        yaw = Random.Range(0f, 360f);
+      }
+
+      Quaternion rotation = prefab.transform.rotation * Quaternion.Euler(Vector3.up * yaw);
 
       SpawnObject(prefab, location.Value, rotation);
       return true; // Successfully spawned, no need to continue
@@ -96,13 +119,16 @@ public class FloorSpawner : DelayableMonoBehaviour
     {
       Vector3 randomPoint = GetRandomPoint(triangulation);
 
-      if (IsSpotUnobstructed(randomPoint, prefab)) return randomPoint;
+      if (
+        Vector3.Distance(randomPoint, _player.transform.position) >= _minPlayerDistance
+        && IsSpotUnobstructed(randomPoint, prefab)
+      ) return randomPoint;
     }
 
     return null; // No valid location found
   }
 
-  public static Vector3 GetRandomPoint(NavMeshTriangulation triangulation)
+  public Vector3 GetRandomPoint(NavMeshTriangulation triangulation)
   {
     // Each triangle is defined by 3 consecutive indices.
     int triangleCount = triangulation.indices.Length / 3;

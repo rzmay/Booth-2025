@@ -39,7 +39,7 @@ public class RaycastBullet : Bullet
         AudioUtility.PlaySpatialClipAtPointWithVariation(_collisionAudio, hit.point);
 
         // Yuhhhh
-        ApplyDamage(hit.transform.gameObject, hit.normal);
+        ApplyDamage(hit.collider, hit.normal);
 
         // And then die!!!!!!
         _detachParticleSystems.Detach();

@@ -15,8 +15,9 @@ public abstract class Bullet : DelayableMonoBehaviour
     [SerializeField]
     protected DecalProjector decal;
 
-    protected void ApplyDamage(GameObject other, Vector3 normal, float damageRatio = 1f)
+    protected void ApplyDamage(Collider collider, Vector3 normal, float damageRatio = 1f)
     {
+        GameObject other = collider.gameObject;
         Debug.Log($"[Bullet] ApplyDamage called with damageRatio {damageRatio}");
 
         // Find the rigidbody correlated with this collider
@@ -38,7 +39,7 @@ public abstract class Bullet : DelayableMonoBehaviour
         if (enemy)
         {
             Debug.Log($"[Bullet] Damageable found, applying damage {damage * damageRatio}");
-            enemy.health -= damage * damageRatio;
+            enemy.Damage(damage * damageRatio, collider);
         }
 
         // As long as what we hit wasn't an enemy, add the decal

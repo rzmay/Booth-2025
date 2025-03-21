@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 [RequireComponent(typeof(DetachParticleSystems))] // Required even if unused to avoid null checks
 public class PlasmaCannonBulletShockwave : MonoBehaviour
@@ -72,7 +72,7 @@ public class PlasmaCannonBulletShockwave : MonoBehaviour
         if (enemy && !_hits.Contains(enemy))
         {
             Debug.Log($"[PlasmaCannonBulletShockwave] Damageable found, applying damage {damage}");
-            enemy.health -= _damage;
+            enemy.Damage(_damage, other);
             _hits.Add(enemy);
         }
     }

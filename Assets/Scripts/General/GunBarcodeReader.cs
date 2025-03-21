@@ -1,15 +1,10 @@
-using UnityEngine;
 using MediaProjection.Models;
+using UnityEngine;
 
 [RequireComponent(typeof(GunManager))]
 public class GunBarcodeReader : MonoBehaviour
 {
-    [SerializeField]
-    private bool _allowSwitching = true;
-
     private GunManager _gunManager;
-
-    private bool set;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -19,8 +14,6 @@ public class GunBarcodeReader : MonoBehaviour
 
     public void ProcessResult(BarcodeReadingResult[] results)
     {
-        if (set && !_allowSwitching) return;
-
         foreach (var result in results)
         {
             Debug.Log($"[GunBarcodeReader] Got barcode result: {result.Text}");
@@ -33,10 +26,14 @@ public class GunBarcodeReader : MonoBehaviour
                 if (success)
                 {
                     _gunManager.SetGun(gun);
-                    set = true;
                     return;
                 }
             }
         }
+    }
+
+    public static void SetBarcodeReadingActive(bool active)
+    {
+        // TODO: Implement
     }
 }
