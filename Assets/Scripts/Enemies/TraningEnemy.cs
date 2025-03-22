@@ -27,7 +27,7 @@ public class TrainingEnemy : DelayableMonoBehaviour
       SpawnSequencer.SetPhase(1);
 
       // Change the OST
-      MusicManager.PlayTrack("play", 1f);
+      MusicManager.PlayTrack("play", 3f);
 
       // Change menu
       MenuController.SetMenu(1);

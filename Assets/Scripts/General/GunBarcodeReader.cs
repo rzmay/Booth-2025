@@ -4,7 +4,15 @@ using UnityEngine;
 [RequireComponent(typeof(GunManager))]
 public class GunBarcodeReader : MonoBehaviour
 {
+    private static GunBarcodeReader _Instance;
+
+    [SerializeField] private GameObject _barcodeManager;
     private GunManager _gunManager;
+
+    void Awake()
+    {
+        _Instance = this;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -34,6 +42,6 @@ public class GunBarcodeReader : MonoBehaviour
 
     public static void SetBarcodeReadingActive(bool active)
     {
-        // TODO: Implement
+        _Instance._barcodeManager.SetActive(active);
     }
 }

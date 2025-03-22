@@ -40,7 +40,7 @@ public class ScoreTracker : MonoBehaviour
         _currentComboCount += 1;
 
         // Set Menu
-        MenuController.SetScore(_score, _currentComboCount);
+        MenuController.SetScore(_score, _currentComboCount, _currentComboTime);
     }
 
     public static void Kill(int points)
