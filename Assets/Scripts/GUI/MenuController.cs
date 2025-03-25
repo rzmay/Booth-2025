@@ -57,7 +57,8 @@ public class MenuController : DelayableMonoBehaviour
 
         // Health starts full
         _health = 1f;
-        _healthBar.fillAmount = 1f;
+        _healthBarL.fillAmount = 1f;
+        _healthBarR.fillAmount = 1f;
 
         // Set initial menu
         SetMenu(0);
@@ -72,7 +73,7 @@ public class MenuController : DelayableMonoBehaviour
     void Update()
     {
         // Lerp health meter
-        if (!Mathf.Approximately(_healthBar.fillAmount, _health))
+        if (!Mathf.Approximately(_healthBarL.fillAmount, _health))
         {
             _healthBarL.fillAmount = Mathf.Lerp(_healthBarL.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
             _healthBarR.fillAmount = Mathf.Lerp(_healthBarR.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
