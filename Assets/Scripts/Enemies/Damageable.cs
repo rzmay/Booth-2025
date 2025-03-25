@@ -10,13 +10,22 @@ public class Damageable : DelayableMonoBehaviour
         public Collider collider;
         public float multiplier;
     }
+
+    public bool damageAfterDeath = false;
     [SerializeField] public List<HitPoint> hitPoints = new();
     public delegate void OnDamage(float health, float damage, bool isCritical);
     public OnDamage onDamage;
 
     public float health = 10f;
 
+    [System.NonSerialized] public bool dead = false;
+
     private float _health;
+
+    public float currentHealth
+    {
+        get { return _health; }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,6 +42,9 @@ public class Damageable : DelayableMonoBehaviour
 
     public void Damage(float damage, Collider collider = null)
     {
+        // Early return if damage after death disabled
+        if (dead && !damageAfterDeath) return;
+
         bool isCritical = false;
         float value = damage;
         if (collider)
@@ -46,7 +58,11 @@ public class Damageable : DelayableMonoBehaviour
         }
 
         _health -= damage;
+        if (_health <= 0) dead = true;
 
-        onDamage?.Invoke(health, value, isCritical);
+        Debug.Log($"[{name}] Took {damage} damage, health = {_health} {(isCritical ? "(critical)" : "")}");
+
+        // Invoke callback, then set dead in order to identify post-mortem hits
+        onDamage?.Invoke(_health, value, isCritical);
     }
 }

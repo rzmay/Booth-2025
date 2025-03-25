@@ -4993,7 +4993,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decal: {fileID: 2194247665895638877, guid: 1ecfcc6a507a941e7b176757958ff343, type: 3}
-  damagePerSecond: 10
+  damagePerSecond: 25
   maxWidth: 0.25
   speedMultiplier: 100
   _ignoreLayers:

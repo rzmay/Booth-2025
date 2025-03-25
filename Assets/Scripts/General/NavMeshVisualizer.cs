@@ -9,14 +9,13 @@ public class NavMeshVisualizer : MonoBehaviour
 
     public void Refresh()
     {
+        // Don't render if inactive
+        if (!isActiveAndEnabled) return;
+
         // Get NavMesh data
         NavMeshTriangulation navMeshData = NavMesh.CalculateTriangulation();
 
-        if (navMeshData.vertices.Length == 0 || navMeshData.indices.Length == 0)
-        {
-            Debug.LogWarning("NavMesh visualization failed: No NavMesh data found.");
-            return;
-        }
+        if (navMeshData.vertices.Length == 0 || navMeshData.indices.Length == 0) return;
 
         // Create a new GameObject for visualization
         GameObject navMeshObj = new GameObject("NavMeshVisualizer");

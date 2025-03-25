@@ -26,6 +26,9 @@ public class ScoreTracker : MonoBehaviour
 
         // Reset combo count if combo is over
         if (_currentComboTime <= 0f) _currentComboCount = 0;
+
+        // Set menu
+        MenuController.SetScore(_score, _currentComboCount, _currentComboTime);
     }
 
     void _TrackPoints(int points)

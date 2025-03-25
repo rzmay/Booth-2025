@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4704004025014492835}
   - component: {fileID: 3577554770364138047}
   - component: {fileID: 4389650832870972363}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -300,7 +300,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.38431373}
+      maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -1444,7 +1444,7 @@ ParticleSystem:
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
-        key1: {r: 0, g: 0.8616302, b: 1, a: 0}
+        key1: {r: 0, g: 0.8616302, b: 1, a: 0.98521465}
         key2: {r: 1, g: 0.5084511, b: 0.5, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
@@ -1460,8 +1460,8 @@ ParticleSystem:
         ctime6: 0
         ctime7: 0
         atime0: 386
-        atime1: 65535
-        atime2: 0
+        atime1: 19661
+        atime2: 65535
         atime3: 0
         atime4: 0
         atime5: 0
@@ -1470,7 +1470,7 @@ ParticleSystem:
         m_Mode: 0
         m_ColorSpace: 0
         m_NumColorKeys: 2
-        m_NumAlphaKeys: 2
+        m_NumAlphaKeys: 3
       minGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -4915,7 +4915,7 @@ GameObject:
   - component: {fileID: 867468270764329132}
   - component: {fileID: 870556577747816422}
   - component: {fileID: 2663922774907044315}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlasmaCannonBulletCollision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9830,7 +9830,7 @@ GameObject:
   - component: {fileID: 7896118200874467393}
   - component: {fileID: 3790368944382696317}
   - component: {fileID: 5326385173016613612}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shockwave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11281,7 +11281,7 @@ ParticleSystem:
         atime0: 386
         atime1: 21627
         atime2: 65535
-        atime3: 0
+        atime3: 65535
         atime4: 0
         atime5: 0
         atime6: 0

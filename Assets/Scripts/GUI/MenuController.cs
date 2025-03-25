@@ -53,6 +53,10 @@ public class MenuController : DelayableMonoBehaviour
     {
         _restartAction.action.performed += OnRestartAction;
 
+        // Health starts full
+        _health = 1f;
+        _healthBar.fillAmount = 1f;
+
         // Set initial menu
         SetMenu(0);
     }
@@ -66,7 +70,7 @@ public class MenuController : DelayableMonoBehaviour
     void Update()
     {
         // Lerp health meter
-        if (Mathf.Approximately(_healthBar.fillAmount, _health))
+        if (!Mathf.Approximately(_healthBar.fillAmount, _health))
         {
             _healthBar.fillAmount = Mathf.Lerp(_healthBar.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
         }
@@ -74,9 +78,10 @@ public class MenuController : DelayableMonoBehaviour
 
     void _SetMenu(int index)
     {
+        Debug.Log($"[MenuController] Set menu ${index}");
         for (int i = 0; i < _Instance._menus.Count; i++)
         {
-            _Instance._menus[i].SetActive(i == index);
+            if (_menus[i].activeSelf != (i == index)) _menus[i].SetActive(i == index);
         }
 
         // If it's game over / victory accept restart input

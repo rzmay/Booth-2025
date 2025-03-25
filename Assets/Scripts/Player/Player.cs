@@ -10,11 +10,15 @@ public class Player : MonoBehaviour
     private Damageable _damageable;
     private AudioSource _audioSource;
 
+    private DamageEffect _damageEffect;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _damageable = GetComponent<Damageable>();
         _audioSource = GetComponent<AudioSource>();
+
+        _damageEffect = FindFirstObjectByType<DamageEffect>();
 
         _damageable.onDamage += OnDamage;
     }
@@ -28,6 +32,7 @@ public class Player : MonoBehaviour
     void OnDamage(float health, float damage, bool _)
     {
         MenuController.SetHealth(health / _damageable.health);
+        _damageEffect.TriggerDamageEffect(damage);
 
         PlayHurtSound();
 
@@ -39,6 +44,9 @@ public class Player : MonoBehaviour
 
             // Stop all enemies
             DisableEnemies();
+
+            // Disable guns
+            GunManager.DisableGuns();
         }
     }
 

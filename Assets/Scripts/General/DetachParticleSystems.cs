@@ -42,7 +42,6 @@ public class DetachParticleSystems : MonoBehaviour
     {
         if (obj == gameObject) return;
 
-        Debug.Log($"[DetachParticleSystems] Detaching {obj.name}");
         obj.transform.SetParent(null, true);
 
         Destroy(obj, destroyAfter);

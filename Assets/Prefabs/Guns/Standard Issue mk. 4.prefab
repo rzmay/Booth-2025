@@ -231,7 +231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableSpatialization: 1
-  gainBoostDb: 0
+  gainBoostDb: 3
   enableAcoustics: 1
   reverbSendDb: 0
 --- !u!114 &8404303515632907344
@@ -246,8 +246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9ecfc337212c4586aed666f593270d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0.5
-  rate: 0.5
+  damage: 3.5
+  rate: 0.4
   bulletSpeed: 20
   _bullet: {fileID: 6668291272654263263, guid: 9eca42c56aa3c4c9ba1f61ed1efc2070, type: 3}
   _fireSound: {fileID: 8300000, guid: eedec73126a6746f58c7105ed07c24a4, type: 3}

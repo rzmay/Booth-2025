@@ -19,10 +19,17 @@ public class TrainingEnemy : DelayableMonoBehaviour
     _damageable.onDamage += OnDamage;
   }
 
+  void OnDestroy()
+  {
+    _damageable.onDamage -= OnDamage;
+  }
+
   void OnDamage(float health, float damage, bool isCritical)
   {
     if (health <= 0)
     {
+      Debug.Log($"[TrainingEnemy] Dead, scheduling despawn");
+
       // Start the main phase after getting killed
       SpawnSequencer.SetPhase(1);
 
@@ -42,8 +49,10 @@ public class TrainingEnemy : DelayableMonoBehaviour
 
   void Despawn()
   {
+    Debug.Log($"[TrainingEnemy] Despawning");
+
     // Spawn particle system
-    Instantiate(_destroyParticleSystem.gameObject, transform.position, Quaternion.identity);
+    Instantiate(_destroyParticleSystem.gameObject, transform.position, transform.rotation);
 
     // Destroy
     Destroy(gameObject);

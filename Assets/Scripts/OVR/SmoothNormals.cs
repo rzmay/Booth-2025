@@ -13,6 +13,8 @@ public class SmoothNormals : MonoBehaviour
 
     public void SmoothMeshNormals()
     {
+        if (!isActiveAndEnabled) return;
+
         Mesh mesh = _meshFilter.mesh;
 
         Vector3[] vertices = mesh.vertices;

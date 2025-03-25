@@ -9,18 +9,23 @@ public class FloorSpawner : DelayableMonoBehaviour
 {
   public static FloorSpawner Instance { get; private set; }
 
-  [System.Serializable]
-  public class TimedSpawn
+  public class SpawnConfig
   {
     public GameObject prefab;
+    public Spawner spawner;
+    public int overrideAttempts;
+  }
+
+  [System.Serializable]
+  public class TimedSpawn : SpawnConfig
+  {
     public AnimationCurve spawnProbability;
     public int spawnDuration;
   }
 
   [System.Serializable]
-  public class ScheduledSpawn
+  public class ScheduledSpawn : SpawnConfig
   {
-    public GameObject prefab;
     public float time;
     public int minSpawnCount;
     public int maxSpawnCount;
@@ -35,6 +40,7 @@ public class FloorSpawner : DelayableMonoBehaviour
   [SerializeField] private float _minPlayerDistance = 1f;
 
   private float _startTime;
+  private bool _navMeshReady = false;
 
   private Player _player;
 
@@ -59,31 +65,34 @@ public class FloorSpawner : DelayableMonoBehaviour
   {
     float timeSinceStart = Time.time - _startTime;
 
+    // Don't try spawning anything unless we have navmesh data
+    if (!_navMeshReady) return;
+
     foreach (var spawnConfig in scheduledSpawns.Where(config => timeSinceStart >= config.time && !config.spawned))
     {
       int count = Random.Range(spawnConfig.minSpawnCount, spawnConfig.maxSpawnCount + 1);
       for (int i = 0; i < count; i++)
       {
-        TrySpawnObjectOnFloor(spawnConfig.prefab);
+        TrySpawnObjectOnFloor(spawnConfig);
       }
 
       // Set spawned regardless of success to avoid endless attempts -- for more flexible implementations, add a retry offset
       spawnConfig.spawned = true;
     }
 
-    foreach (var spawnConfig in timedSpawns)
+    foreach (var spawnConfig in timedSpawns.Where(config => timeSinceStart <= config.spawnDuration))
     {
       float durationPercentage = timeSinceStart / spawnConfig.spawnDuration;
       if (Random.value < (spawnConfig.spawnProbability.Evaluate(durationPercentage) * Time.deltaTime))
       {
-        TrySpawnObjectOnFloor(spawnConfig.prefab);
+        TrySpawnObjectOnFloor(spawnConfig);
       }
     }
   }
 
-  private bool TrySpawnObjectOnFloor(GameObject prefab)
+  private bool TrySpawnObjectOnFloor(SpawnConfig spawnConfig)
   {
-    Vector3? location = GetValidSpawnLocation(prefab);
+    Vector3? location = GetValidSpawnLocation(spawnConfig);
 
     if (location.HasValue)
     {
@@ -101,30 +110,31 @@ public class FloorSpawner : DelayableMonoBehaviour
         yaw = Random.Range(0f, 360f);
       }
 
-      Quaternion rotation = prefab.transform.rotation * Quaternion.Euler(Vector3.up * yaw);
+      Quaternion rotation = spawnConfig.prefab.transform.rotation * Quaternion.Euler(Vector3.up * yaw);
 
-      SpawnObject(prefab, location.Value, rotation);
+      SpawnObject(spawnConfig, location.Value, rotation);
       return true; // Successfully spawned, no need to continue
     }
 
-    Debug.LogWarning($"[FloorSpawner] Failed to find an unobstructed spot for {prefab.name} after {_maxAttempts} attempts.");
     return false;
   }
 
-  private Vector3? GetValidSpawnLocation(GameObject prefab)
+  private Vector3? GetValidSpawnLocation(SpawnConfig spawnConfig)
   {
     NavMeshTriangulation triangulation = NavMesh.CalculateTriangulation();
+    int attempts = spawnConfig.overrideAttempts == 0 ? _maxAttempts : spawnConfig.overrideAttempts;
 
-    for (int attempt = 0; attempt < _maxAttempts; attempt++)
+    for (int attempt = 0; attempt < attempts; attempt++)
     {
       Vector3 randomPoint = GetRandomPoint(triangulation);
 
       if (
         Vector3.Distance(randomPoint, _player.transform.position) >= _minPlayerDistance
-        && IsSpotUnobstructed(randomPoint, prefab)
+        && IsSpotUnobstructed(randomPoint, spawnConfig.prefab)
       ) return randomPoint;
     }
 
+    Debug.LogWarning($"[FloorSpawner] Failed to find an unobstructed spot for {spawnConfig.prefab.name} after {attempts} attempts.");
     return null; // No valid location found
   }
 
@@ -187,8 +197,21 @@ public class FloorSpawner : DelayableMonoBehaviour
     return true;
   }
 
-  private void SpawnObject(GameObject prefab, Vector3 location, Quaternion rotation)
+  private void SpawnObject(SpawnConfig spawnConfig, Vector3 location, Quaternion rotation)
   {
-    Instantiate(prefab, location, rotation);
+    Debug.Log($"[FloowSpawner] Spawning {spawnConfig.prefab.name}");
+    if (!spawnConfig.spawner) Instantiate(spawnConfig.prefab, location, rotation);
+    else
+    {
+      Spawner spawnerObject = Instantiate(spawnConfig.spawner);
+      spawnerObject.prefab = spawnConfig.prefab;
+      spawnerObject.targetPosition = location;
+      spawnerObject.targetRotation = rotation;
+    }
+  }
+
+  public void NavMeshReady()
+  {
+    _navMeshReady = true;
   }
 }

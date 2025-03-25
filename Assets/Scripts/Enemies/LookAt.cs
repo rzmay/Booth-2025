@@ -3,6 +3,7 @@ using UnityEngine;
 public class LookAt : MonoBehaviour
 {
   public Transform target; // The target your enemy is looking at
+  public Vector3 forward = Vector3.forward;
   public float rotationSpeed = 5f; // Speed of rotation interpolation
   public bool rotateX = true;
   public bool rotateY = true;
@@ -15,7 +16,7 @@ public class LookAt : MonoBehaviour
 
   private void SmoothLookAt()
   {
-    Vector3 direction = (target?.position ?? transform.position + Vector3.forward) - transform.position;
+    Vector3 direction = (target?.position ?? transform.position + forward) - transform.position;
     Quaternion targetRotation = Quaternion.LookRotation(direction);
 
     Vector3 eulerRotation = targetRotation.eulerAngles;
@@ -26,6 +27,8 @@ public class LookAt : MonoBehaviour
     float z = rotateZ ? eulerRotation.z : currentEuler.z;
 
     Quaternion finalRotation = Quaternion.Euler(x, y, z);
-    transform.rotation = Quaternion.Slerp(transform.rotation, finalRotation, Time.deltaTime * rotationSpeed);
+
+    if (rotationSpeed > 0) transform.rotation = Quaternion.Slerp(transform.rotation, finalRotation, Time.deltaTime * rotationSpeed);
+    else transform.rotation = finalRotation;
   }
 }

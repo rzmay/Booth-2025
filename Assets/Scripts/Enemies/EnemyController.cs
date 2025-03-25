@@ -7,13 +7,14 @@ using UnityEngine.Animations;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Damageable))]
+[RequireComponent(typeof(AudioSource))]
 public class EnemyController : MonoBehaviour
 {
-  public int points;
   public float attackRange;
   public float attackRate;
   public float attackDamage;
   public Transform attackBone;
+  public float attackBoneRadius = 0.1f;
   public Transform headBone;
   public Bullet projectile;
   public float projectileSpeed;
@@ -47,11 +48,12 @@ public class EnemyController : MonoBehaviour
   private LookAt[] _constraints;
 
 
-  private float _targetDistance;
+  // private float _targetDistance;
 
   private float _attackCooldown;
 
   private float _soundCooldown;
+  private float _gainBoost = 0f;
 
   void Start()
   {
@@ -64,7 +66,10 @@ public class EnemyController : MonoBehaviour
     _detachParticleSystems = GetComponent<DetachParticleSystems>();
     _constraints = GetComponentsInChildren<LookAt>();
 
-    _targetDistance = _navAgent.stoppingDistance;
+    MetaXRAudioSource _metaAudioSource = GetComponent<MetaXRAudioSource>();
+    if (_metaAudioSource) _gainBoost = _metaAudioSource.GainBoostDb;
+
+    // _targetDistance = _navAgent.stoppingDistance;
 
     _damageable.onDamage += OnDamage;
 
@@ -74,14 +79,22 @@ public class EnemyController : MonoBehaviour
     PlaySound(_spawnSounds);
   }
 
+  void OnDestroy()
+  {
+    _damageable.onDamage -= OnDamage;
+  }
+
   void Update()
   {
     _attackCooldown -= Time.deltaTime;
     _soundCooldown -= Time.deltaTime;
 
+    // Don't do any of this if dead
+    if (_damageable.dead) return;
+
     bool hasLineOfSight = HasLineOfSight();
 
-    if (_animator != null) _animator.SetFloat("Speed", _navAgent.velocity.magnitude);
+    if (_animator != null) _animator.SetFloat("Speed", (_navAgent.velocity.magnitude / _navAgent.speed));
     if (_player != null) SetConstraintTargets(hasLineOfSight ? _player.transform : null);
 
     if (_audioSource != null && _soundCooldown <= 0 && Random.value < soundFrequency * Time.deltaTime)
@@ -90,25 +103,19 @@ public class EnemyController : MonoBehaviour
     }
 
     // If the player isn't in sight, we need to get closer
-    if (!HasLineOfSight())
-    {
-      Debug.Log($"[{name}:EnemyController] No line of sight, getting closer");
-      _navAgent.stoppingDistance = 0.01f;
-    }
-    else
-    {
-      _navAgent.stoppingDistance = _targetDistance;
-    }
+    // if (!HasLineOfSight())
+    // {
+    //   _navAgent.stoppingDistance = 0.01f;
+    // }
+    // else
+    // {
+    //   _navAgent.stoppingDistance = _targetDistance;
+    // }
 
     // Only attack if within close to stopping range, attack has cooled down, and line of sight
     if (_attackCooldown <= 0f && HasLineOfSight() && _navAgent.remainingDistance <= attackRange)
     {
-      Debug.Log($"[{name}:EnemyController] Within attacking range, executing attack");
       Attack();
-    }
-    else if (HasLineOfSight())
-    {
-      Debug.Log($"[{name}:EnemyController] Cannot attack. Remaining distance: {_navAgent.remainingDistance}, attackRange: {attackRange}, attackCooldown: {_attackCooldown}");
     }
 
     _navAgent.SetDestination(GetDestination());
@@ -148,11 +155,9 @@ public class EnemyController : MonoBehaviour
 
   protected void MeleeAttack()
   {
-    Debug.Log($"[{name}:EnemyController] Executing melee attack");
-
     // Find the player
-    Collider hit = Physics.OverlapSphere(attackBone.position, 0.1f)
-      .First(c => c.GetComponent<Player>() != null);
+    Collider hit = Physics.OverlapSphere(attackBone.position, attackBoneRadius)
+      .FirstOrDefault(c => c.GetComponent<Player>() != null);
 
     if (!hit) return;
 
@@ -162,8 +167,6 @@ public class EnemyController : MonoBehaviour
 
   protected void ProjectileAttack()
   {
-    Debug.Log($"[{name}:EnemyController]] Executing projectile attack");
-
     // Calculate target position -- halfway between camera (head) and ground, otherwise its shooting at the face
     Vector3 targetPosition = Vector3.Scale(_player.transform.position, new Vector3(1, 0.5f, 1));
 
@@ -185,15 +188,10 @@ public class EnemyController : MonoBehaviour
 
   void OnDamage(float health, float damage, bool isCritical)
   {
-    Debug.Log($"[{name}:EnemyController] Damage received, damage: {damage}, health: {health}");
-
     if (health <= 0)
     {
       // Death sound
-      PlaySound(_deathSounds);
-
-      // Track score
-      ScoreTracker.Kill(points);
+      PlaySound(_deathSounds, true);
 
       // Animate or deathend
       if (_animator) _animator.SetTrigger("Death");
@@ -203,7 +201,11 @@ public class EnemyController : MonoBehaviour
     {
       // Hit sounds
       PlaySound(_hitSounds);
-      if (isCritical) PlaySound(_criticalHitSounds, true);
+      if (isCritical)
+      {
+        Debug.Log($"[EnemyController] playing critical hit sound with volume {1 + _gainBoost}");
+        PlaySound(_criticalHitSounds, true);
+      }
 
       // Animate
       _animator?.SetTrigger("Hit");
@@ -218,12 +220,16 @@ public class EnemyController : MonoBehaviour
     // Spawn the next phase
     if (_nextPhase) Instantiate(_nextPhase.gameObject, transform.position, transform.rotation);
 
-    _detachParticleSystems.Detach();
+    // Detach particle systems
+    if (_detachParticleSystems) _detachParticleSystems.Detach();
+
     Destroy(gameObject);
   }
 
   public void OnAttackHit()
   {
+    if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) return;
+
     PlaySound(_attackSounds);
 
     if (projectile) ProjectileAttack();
@@ -238,12 +244,13 @@ public class EnemyController : MonoBehaviour
 
       if (detached)
       {
-        AudioUtility.PlaySpatialClipAtPointWithVariation(clip, transform.position);
+        AudioUtility.PlaySpatialClipAtPointWithVariation(clip, transform.position, 1 + _gainBoost);
       }
-      else
+      else if (_audioSource)
       {
-        _audioSource?.Stop();
-        _audioSource?.PlayOneShot(clip);
+        _audioSource.Stop();
+        _audioSource.clip = clip;
+        _audioSource.Play();
         _soundCooldown = clip.length;
       }
     }

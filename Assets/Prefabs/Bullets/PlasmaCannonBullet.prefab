@@ -4926,7 +4926,7 @@ MonoBehaviour:
   minSize: 0.1
   sizeRatio: 0.5
   shockwaveSizeRatio: 1.5
-  damageRatio: 10
+  damageRatio: 8
   volumeRatio: 50
   _shockwavePrefab: {fileID: 870556577747816422, guid: 448e01046e11b47b8a847bc66e00beec, type: 3}
   _collisionAudio: {fileID: 8300000, guid: d4b0cf2f329034d37ac298e84c5cbca9, type: 3}
