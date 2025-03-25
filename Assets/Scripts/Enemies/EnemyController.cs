@@ -13,6 +13,7 @@ public class EnemyController : MonoBehaviour
   public float attackRange;
   public float attackRate;
   public float attackDamage;
+  public float hitAttackDelay;
   public Transform attackBone;
   public float attackBoneRadius = 0.1f;
   public Transform headBone;
@@ -95,6 +96,14 @@ public class EnemyController : MonoBehaviour
     _attackCooldown -= Time.deltaTime;
     _soundCooldown -= Time.deltaTime;
 
+    // If at any point the animator is not in the attack state but _attacking is true, then
+    // attack was interrupted and we must call OnAttackEnd
+    if (_animator && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && _attacking)
+    {
+      Debug.Log($"[{name}:EnemyController] Safeguard caught attacking during state {_animator.GetCurrentAnimatorStateInfo(0).shortNameHash}");
+      OnAttackEnd();
+    }
+
     // Don't do any of this if dead
     if (_damageable.dead) return;
 
@@ -125,10 +134,6 @@ public class EnemyController : MonoBehaviour
     }
 
     _navAgent.SetDestination(GetDestination());
-
-    // If at any point the animator is not in the attack state but _attacking is true, then
-    // attack was interrupted and we must call OnAttackEnd
-    if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && _attacking) OnAttackEnd();
 
     // Check melee hit if valid
     if (_attacking && !_hitPlayer) CheckMeleeHit();
@@ -202,6 +207,9 @@ public class EnemyController : MonoBehaviour
 
   void OnDamage(float health, float damage, bool isCritical)
   {
+    // If enemy gets hit, any active attack should end
+    if (_attacking) OnAttackEnd();
+
     if (health <= 0)
     {
       // Death sound
@@ -221,8 +229,14 @@ public class EnemyController : MonoBehaviour
         PlaySound(_criticalHitSounds, true);
       }
 
-      // Animate
-      _animator?.SetTrigger("Hit");
+      if (_animator)
+      {
+        // Animate
+        _animator.SetTrigger("Hit");
+
+        // Set attack cooldown
+        _attackCooldown = Mathf.Max(attackRate, hitAttackDelay);
+      }
     }
   }
 
