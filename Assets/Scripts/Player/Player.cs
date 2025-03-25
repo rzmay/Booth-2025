@@ -47,6 +47,12 @@ public class Player : MonoBehaviour
 
             // Disable guns
             GunManager.DisableGuns();
+
+            // No more spawns
+            SpawnSequencer.SetPhase(2);
+
+            // No more UFO spawns either
+            UFOSpawner.disabled = false;
         }
     }
 

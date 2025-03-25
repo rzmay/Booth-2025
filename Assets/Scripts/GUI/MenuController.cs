@@ -10,7 +10,9 @@ public class MenuController : DelayableMonoBehaviour
 {
     private static MenuController _Instance;
 
-    [SerializeField] private float _healthBarLerpFactor = 1f;
+    [SerializeField] private float _healthBarLerpFactor = 5f;
+    [SerializeField] private float _menuLerpFactor = 5f;
+
     [SerializeField] private List<GameObject> _menus; // Expecting 4 -- title, gameplay, lose, win
     [SerializeField] private TMP_Text _gunDetectedName;
     [SerializeField] private TMP_Text _gunName;
@@ -30,6 +32,8 @@ public class MenuController : DelayableMonoBehaviour
 
     [SerializeField] private float _acceptRestartDelay;
     [SerializeField] private InputActionReference _restartAction;
+
+    private List<bool> _menuActive;
 
     private bool _acceptRestart;
 
@@ -52,6 +56,7 @@ public class MenuController : DelayableMonoBehaviour
     void Start()
     {
         _restartAction.action.performed += OnRestartAction;
+        _menuActive = new(new bool[_menus.Count]);
 
         // Health starts full
         _health = 1f;
@@ -74,6 +79,27 @@ public class MenuController : DelayableMonoBehaviour
         {
             _healthBar.fillAmount = Mathf.Lerp(_healthBar.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
         }
+        else
+        {
+            _healthBar.fillAmount = _health;
+        }
+
+        // Lerp menu opacity
+        for (int i = 0; i < _menus.Count; i++)
+        {
+            CanvasGroup group = _menus[i].GetComponent<CanvasGroup>();
+            if (!group) continue;
+
+            float targetAlpha = _menuActive[i] ? 1f : 0f;
+            if (!Mathf.Approximately(group.alpha, targetAlpha))
+            {
+                group.alpha = Mathf.Lerp(group.alpha, targetAlpha, _menuLerpFactor * Time.deltaTime);
+            }
+            else
+            {
+                group.alpha = targetAlpha;
+            }
+        }
     }
 
     void _SetMenu(int index)
@@ -81,7 +107,7 @@ public class MenuController : DelayableMonoBehaviour
         Debug.Log($"[MenuController] Set menu ${index}");
         for (int i = 0; i < _Instance._menus.Count; i++)
         {
-            if (_menus[i].activeSelf != (i == index)) _menus[i].SetActive(i == index);
+            _menuActive[i] = i == index;
         }
 
         // If it's game over / victory accept restart input

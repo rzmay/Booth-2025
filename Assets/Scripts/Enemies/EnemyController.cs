@@ -44,7 +44,7 @@ public class EnemyController : MonoBehaviour
   private AudioSource _audioSource;
   private Animator _animator;
   private DetachParticleSystems _detachParticleSystems;
-
+  private TrailRenderer _attackBoneTrail;
   private LookAt[] _constraints;
 
 
@@ -54,6 +54,9 @@ public class EnemyController : MonoBehaviour
 
   private float _soundCooldown;
   private float _gainBoost = 0f;
+
+  private bool _attacking = false;
+  private bool _hitPlayer = false;
 
   void Start()
   {
@@ -68,6 +71,9 @@ public class EnemyController : MonoBehaviour
 
     MetaXRAudioSource _metaAudioSource = GetComponent<MetaXRAudioSource>();
     if (_metaAudioSource) _gainBoost = _metaAudioSource.GainBoostDb;
+
+    _attackBoneTrail = attackBone.GetComponent<TrailRenderer>();
+    if (_attackBoneTrail) _attackBoneTrail.emitting = false;
 
     // _targetDistance = _navAgent.stoppingDistance;
 
@@ -119,6 +125,13 @@ public class EnemyController : MonoBehaviour
     }
 
     _navAgent.SetDestination(GetDestination());
+
+    // If at any point the animator is not in the attack state but _attacking is true, then
+    // attack was interrupted and we must call OnAttackEnd
+    if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && _attacking) OnAttackEnd();
+
+    // Check melee hit if valid
+    if (_attacking && !_hitPlayer) CheckMeleeHit();
   }
 
   bool HasLineOfSight()
@@ -153,7 +166,7 @@ public class EnemyController : MonoBehaviour
     else OnAttackHit();
   }
 
-  protected void MeleeAttack()
+  protected void CheckMeleeHit()
   {
     // Find the player
     Collider hit = Physics.OverlapSphere(attackBone.position, attackBoneRadius)
@@ -163,6 +176,7 @@ public class EnemyController : MonoBehaviour
 
     // Deal damage
     hit.GetComponent<Damageable>().Damage(attackDamage);
+    _hitPlayer = true;
   }
 
   protected void ProjectileAttack()
@@ -226,6 +240,22 @@ public class EnemyController : MonoBehaviour
     Destroy(gameObject);
   }
 
+  // Used for attacks spanning some time
+  public void OnAttackStart()
+  {
+    _attacking = true;
+    if (_attackBoneTrail) _attackBoneTrail.emitting = true;
+  }
+
+  public void OnAttackEnd()
+  {
+    _hitPlayer = false;
+    _attacking = false;
+
+    if (_attackBoneTrail) _attackBoneTrail.emitting = false;
+  }
+
+  // Used for instantaneous attacks (such as a firing projectile)
   public void OnAttackHit()
   {
     if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) return;
@@ -233,7 +263,7 @@ public class EnemyController : MonoBehaviour
     PlaySound(_attackSounds);
 
     if (projectile) ProjectileAttack();
-    else MeleeAttack();
+    else CheckMeleeHit();
   }
 
   private void PlaySound(List<AudioClip> clips, bool detached = false)

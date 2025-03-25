@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Damageable))]
 public class UFOSpawner : Spawner
 {
+  public static bool disabled = false;
   public float initialHeight = 5f;
   public float targetHeight = 2f;
   public float tractorBeamWidth = 0.5f;
@@ -84,6 +85,9 @@ public class UFOSpawner : Spawner
     else if (_spawnTime >= 0f)
     {
       _spawnTime -= Time.deltaTime;
+
+      // Don't do any tractor beam stuff or spawning if disabled
+      if (disabled) return;
 
       if (_spawnTime >= (spawnDuration / 2f))
       {
