@@ -5,6 +5,7 @@ Shader "UI/VignetteEffect"
         _VignetteColor("Vignette Color", Color) = (1, 0, 0, 1)
         _Intensity("Intensity", Range(0, 1)) = 0.5
         _Smoothness("Smoothness", Range(0, 1)) = 0.5
+        _Padding("Padding", Range(0, 5)) = 0.3
     }
     SubShader
     {
@@ -32,6 +33,7 @@ Shader "UI/VignetteEffect"
             float4 _VignetteColor;
             float _Intensity;
             float _Smoothness;
+            float _Padding;
 
             v2f vert(appdata v)
             {
@@ -44,7 +46,7 @@ Shader "UI/VignetteEffect"
             float4 frag(v2f i) : SV_Target
             {
                 float2 uv = i.uv * 2.0 - 1.0; // Transform UV range from [0,1] to [-1,1]
-                float dist = length(uv);
+                float dist = length(uv) * (1 + _Padding);
                 float vignette = smoothstep(0, 1, clamp(0, 1, (dist * sqrt(_Intensity)) - _Smoothness));
                 float4 color = _VignetteColor;
                 color.a *= vignette;

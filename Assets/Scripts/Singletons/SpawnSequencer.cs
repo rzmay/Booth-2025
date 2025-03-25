@@ -29,6 +29,7 @@ public class SpawnSequencer : MonoBehaviour
 
   public static void SetPhase(int index)
   {
+    Debug.Log($"[SpawnSequencer] Set phase {index}");
     FloorSpawner.Instance.timedSpawns = Instance.phases[index].timedSpawns;
     FloorSpawner.Instance.scheduledSpawns = Instance.phases[index].scheduledSpawns;
 

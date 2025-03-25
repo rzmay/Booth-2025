@@ -18,29 +18,13 @@ _source0 and _source1 are for the component's use - you don't have to worry abou
 [ExecuteInEditMode]
 public class DoubleAudioSource : MonoBehaviour
 {
-  AudioSource _source0;
-  AudioSource _source1;
+  [SerializeField] AudioSource _source0;
+  [SerializeField] AudioSource _source1;
 
-  #region internal vars
   bool cur_is_source0 = true; //is _source0 currently the active AudioSource (plays some sound right now)
 
   Coroutine _curSourceFadeRoutine = null;
   Coroutine _newSourceFadeRoutine = null;
-  #endregion
-
-
-  #region internal functionality
-  void Reset()
-  {
-    Update();
-  }
-
-
-  void Awake()
-  {
-    Update();
-  }
-
 
   void Update()
   {
@@ -52,7 +36,6 @@ public class DoubleAudioSource : MonoBehaviour
     {
       InitAudioSources();
     }
-
   }
 
 
@@ -86,10 +69,8 @@ public class DoubleAudioSource : MonoBehaviour
           _source1 = audioSources[1];
         }
         break;
-    }//end switch
+    }
   }
-  #endregion
-
 
   //gradually shifts the sound comming from our audio sources to the this clip:
   // maxVolume should be in 0-to-1 range
@@ -98,7 +79,7 @@ public class DoubleAudioSource : MonoBehaviour
     //var fadeRoutine = StartCoroutine(Fade(clipToPlay, maxVolume, fadingTime, delay_before_crossFade));
     StartCoroutine(Fade(clipToPlay, maxVolume, fadingTime, delay_before_crossFade));
 
-  }//end CrossFade()
+  }
 
 
   IEnumerator Fade(AudioClip playMe, float maxVolume, float fadingTime, float delay_before_crossFade = 0)
@@ -164,7 +145,7 @@ public class DoubleAudioSource : MonoBehaviour
       }
 
       yield return null;
-    }//end while
+    }
   }
 
 
@@ -181,7 +162,7 @@ public class DoubleAudioSource : MonoBehaviour
 
       //otherwise, both sources are initialized. See if any is playing:
       return _source0.isPlaying || _source1.isPlaying;
-    }//end get
+    }
   }
 
 }

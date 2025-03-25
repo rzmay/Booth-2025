@@ -1,17 +1,22 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 
 namespace LudicWorlds
 {
     public class DebugPanel : MonoBehaviour
     {
+        public InputActionReference toggle;
+        public bool billboard = true;
         private static Canvas _canvas;
         private static Text _debugText;
-        private static Text _fpsText;
-        private static Text _statusText;
+        private static TMP_Text _fpsText;
+        private static TMP_Text _statusText;
 
         private float _elapsedTime;
         private uint _fpsSamples;
@@ -33,6 +38,7 @@ namespace LudicWorlds
             _queuedMessages = new Queue<string>();
 
             Application.logMessageReceived += OnMessageReceived;
+            toggle.action.performed += OnToggle;
         }
 
 
@@ -45,6 +51,14 @@ namespace LudicWorlds
         void OnDestroy()
         {
             Application.logMessageReceived -= OnMessageReceived;
+            toggle.action.performed -= OnToggle;
+        }
+
+        void OnToggle(InputAction.CallbackContext context)
+        {
+            Transform ui = this.transform.Find("UI");
+
+            ui.gameObject.SetActive(!ui.gameObject.activeSelf);
         }
 
         private void AcquireObjects()
@@ -53,14 +67,14 @@ namespace LudicWorlds
             Transform ui = this.transform.Find("UI");
 
             _debugText = ui.Find("DebugText").GetComponent<Text>();
-            _fpsText = ui.Find("FpsText").GetComponent<Text>();
-            _statusText = ui.Find("StatusText").GetComponent<Text>();
+            _fpsText = ui.Find("FpsText").GetComponent<TMP_Text>();
+            _statusText = ui.Find("StatusText").GetComponent<TMP_Text>();
         }
 
         void OnMessageReceived(string message, string stackTrace, LogType type)
         {
-            // _queuedMessages.Enqueue($"{message} [{stackTrace}]");
-            _queuedMessages.Enqueue(message);
+            if (type == LogType.Log) _queuedMessages.Enqueue(message);
+            else _queuedMessages.Enqueue($"{message} [{stackTrace}]");
         }
 
         // Update is called once per frame
@@ -82,9 +96,12 @@ namespace LudicWorlds
             _fpsSamples++;
 
             //Face the Camera (Billboard)
-            _dirToPlayer = (this.transform.position - _cameraTransform.position).normalized;
-            _dirToPlayer.y = 0; // This ensures rotation only around the Y-axis
-            this.transform.rotation = Quaternion.LookRotation(_dirToPlayer);
+            if (billboard)
+            {
+                _dirToPlayer = (this.transform.position - _cameraTransform.position).normalized;
+                _dirToPlayer.y = 0; // This ensures rotation only around the Y-axis
+                this.transform.rotation = Quaternion.LookRotation(_dirToPlayer);
+            }
 
             //Display any queued Debug Log messages...
             if (_queuedMessages.Count > 0)

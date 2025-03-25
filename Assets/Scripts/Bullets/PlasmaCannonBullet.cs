@@ -19,12 +19,10 @@ public class PlasmaCannonBullet : Bullet
 
     void Start()
     {
-        Debug.Log("[PlasmaCannonBullet] start");
         _detachParticleSystems = GetComponent<DetachParticleSystems>();
 
         // Size should scale with damage
         transform.localScale = Vector3.one * Mathf.Max(minSize, damage * sizeRatio);
-        Debug.Log($"[PlasmaCannonBullet] size set {Mathf.Max(minSize, damage * sizeRatio)}");
     }
 
     // Update is called once per frame
@@ -41,7 +39,6 @@ public class PlasmaCannonBullet : Bullet
         PlasmaCannonBulletShockwave shockwave = shockwaveObject.GetComponent<PlasmaCannonBulletShockwave>();
         shockwave.damage = damage * damageRatio;
         shockwave.transform.localScale = (transform.localScale * shockwaveSizeRatio) / sizeRatio;
-        Debug.Log($"[Shockwave] Spawning shockwave with scale {transform.localScale.magnitude}");
 
         Vector3 normal = collision.contacts.Length == 0 ? -transform.rotation.eulerAngles : collision.contacts[0].normal;
 

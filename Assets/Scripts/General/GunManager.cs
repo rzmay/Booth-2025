@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class GunManager : MonoBehaviour
 {
+  private static GunManager _Instance;
+
   [SerializeField]
   private List<GameObject> _guns = new();
 
@@ -17,6 +19,11 @@ public class GunManager : MonoBehaviour
 
   private int _gunIndex = 0;
   private GameObject _currentInstance;
+
+  void Awake()
+  {
+    _Instance = this;
+  }
 
   void Start()
   {
@@ -75,5 +82,11 @@ public class GunManager : MonoBehaviour
 
     Debug.Log($"Switched gun: {_guns[_gunIndex].name}");
     InstantiateCurrent();
+  }
+
+  public static void DisableGuns()
+  {
+    _Instance.DestroyCurrent();
+    _Instance._allowSwitching = false;
   }
 }

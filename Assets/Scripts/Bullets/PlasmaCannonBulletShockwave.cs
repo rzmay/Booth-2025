@@ -45,8 +45,6 @@ public class PlasmaCannonBulletShockwave : MonoBehaviour
         _collider.radius = 0.00001f;
         _lifetime = _particleSystem.main.startLifetime.constantMax;
         _startTime = Time.time;
-
-        Debug.Log($"[Shockwave] Spawned with lifetime {_lifetime} and scale {transform.localScale.x} at time {Time.time}");
     }
 
     // Update is called once per frame
@@ -58,8 +56,6 @@ public class PlasmaCannonBulletShockwave : MonoBehaviour
         // If complete, git out!!!!
         if (_time >= 1)
         {
-            Debug.Log($"[Shockwave] Completed with relative time {_time} at time {Time.time}");
-
             _detachParticleSystems.Detach();
             Destroy(gameObject);
         }
@@ -71,7 +67,6 @@ public class PlasmaCannonBulletShockwave : MonoBehaviour
         Damageable enemy = other.GetComponentInParent<Damageable>();
         if (enemy && !_hits.Contains(enemy))
         {
-            Debug.Log($"[PlasmaCannonBulletShockwave] Damageable found, applying damage {damage}");
             enemy.Damage(_damage, other);
             _hits.Add(enemy);
         }
@@ -85,7 +80,6 @@ public class PlasmaCannonBulletShockwave : MonoBehaviour
         {
             Vector3 direction = other.transform.position - transform.position;
             rb.AddForceAtPosition(direction.normalized * forceRatio * _damage, transform.position);
-            Debug.Log($"[Shockwave] Applied force {forceRatio * _damage} to object {rb.name}");
         }
     }
 }

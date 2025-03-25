@@ -1,16 +1,18 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MenuController : MonoBehaviour
+
+public class MenuController : DelayableMonoBehaviour
 {
     private static MenuController _Instance;
 
     [SerializeField] private float _healthBarLerpFactor = 1f;
     [SerializeField] private List<GameObject> _menus; // Expecting 4 -- title, gameplay, lose, win
+    [SerializeField] private TMP_Text _gunDetectedName;
     [SerializeField] private TMP_Text _gunName;
     [SerializeField] private Image _gunCooldownMeter;
     [SerializeField] private Image _gunDamageMeter;
@@ -19,8 +21,19 @@ public class MenuController : MonoBehaviour
     [SerializeField] private Gradient _healthGradient;
     [SerializeField] private TMP_Text _scoreMeter;
     [SerializeField] private TMP_Text _comboMeter;
+    [SerializeField] private ParticleSystem _comboSparks;
     [SerializeField] private TMP_Text _gameOverScoreMeter;
     [SerializeField] private TMP_Text _gameOverComboMeter;
+    [SerializeField] private TMP_Text _gameOverPlayAgain;
+    [SerializeField] private TMP_Text _victoryScoreMeter;
+    [SerializeField] private TMP_Text _victoryComboMeter;
+    [SerializeField] private TMP_Text _victoryPlayAgain;
+
+
+    [SerializeField] private float _acceptRestartDelay;
+    [SerializeField] private InputActionReference _restartAction;
+
+    private bool _acceptRestart;
 
 
     // Saved to control charge meter graphics
@@ -33,19 +46,33 @@ public class MenuController : MonoBehaviour
     private float _highestCombo;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         _Instance = this;
+    }
+
+    void Start()
+    {
+        _restartAction.action.performed += OnRestartAction;
+
+        // Health starts full
+        _health = 1f;
+        _healthBar.fillAmount = 1f;
 
         // Set initial menu
         SetMenu(0);
+    }
+
+    void OnDestroy()
+    {
+        _restartAction.action.performed -= OnRestartAction;
     }
 
     // Update is called once per frame
     void Update()
     {
         // Lerp health meter
-        if (Mathf.Approximately(_healthBarL.fillAmount, _health))
+        if (!Mathf.Approximately(_healthBar.fillAmount, _health))
         {
             _healthBarL.fillAmount = Mathf.Lerp(_healthBarL.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
             _healthBarR.fillAmount = Mathf.Lerp(_healthBarR.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
@@ -56,14 +83,29 @@ public class MenuController : MonoBehaviour
 
     void _SetMenu(int index)
     {
+        Debug.Log($"[MenuController] Set menu ${index}");
         for (int i = 0; i < _Instance._menus.Count; i++)
         {
-            _Instance._menus[i].SetActive(i == index);
+            if (_menus[i].activeSelf != (i == index)) _menus[i].SetActive(i == index);
+        }
+
+        // If it's game over / victory accept restart input
+        if (index == 2 || index == 3)
+        {
+            Delay(() =>
+            {
+                _acceptRestart = true;
+                _victoryPlayAgain.gameObject.SetActive(true);
+                _gameOverPlayAgain.gameObject.SetActive(true);
+            }, _acceptRestartDelay);
         }
     }
 
     void _SetGun(string name, float damage, float cooldown, float chargeSpeed)
     {
+        _gunDetectedName.gameObject.SetActive(true);
+        _gunDetectedName.text = name;
+
         _gunName.text = name;
         _chargeSpeed = chargeSpeed;
 
@@ -89,24 +131,37 @@ public class MenuController : MonoBehaviour
         _gunCooldownMeter.fillAmount = 1f - cooldown;
     }
 
-    void _SetScore(int score, int combo)
+    void _SetScore(int score, int combo, float comboTime)
     {
         // Set score meter
         _scoreMeter.text = score.ToString("0000");
         _gameOverScoreMeter.text = score.ToString("0000");
+        _victoryScoreMeter.text = score.ToString("0000");
 
         // Set combo meter
-        _comboMeter.text = combo.ToString();
+        _comboMeter.text = combo.ToString("0000");
+
+        // Set combo particles
+        var emission = _comboSparks.emission;
+        emission.rateOverTime = Mathf.Clamp(comboTime, 0, 30);
+
+        // Store highest combo
         if (combo > _highestCombo)
         {
             _highestCombo = combo;
-            _gameOverComboMeter.text = combo.ToString();
+            _gameOverComboMeter.text = combo.ToString("0000");
+            _victoryComboMeter.text = combo.ToString("0000");
         }
     }
 
     void _SetHealth(float health)
     {
         _health = health;
+    }
+
+    void OnRestartAction(InputAction.CallbackContext obj)
+    {
+        if (_acceptRestart) SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public static void SetMenu(int index)
@@ -129,9 +184,9 @@ public class MenuController : MonoBehaviour
         _Instance._SetCooldown(cooldown);
     }
 
-    public static void SetScore(int score, int combo)
+    public static void SetScore(int score, int combo, float comboTime)
     {
-        _Instance._SetScore(score, combo);
+        _Instance._SetScore(score, combo, comboTime);
     }
 
     public static void SetHealth(float health)

@@ -51,7 +51,6 @@ public class LaserBulletRenderer : MonoBehaviour
     void RenderCylinder()
     {
         // Set cylinder transform
-        Debug.Log($"[LaserBulletRenderer] Width: {width}");
         _cylinder.transform.localScale = new Vector3(width, (length / 2), width);
         _cylinder.transform.localPosition = Vector3.forward * length / 2;
 

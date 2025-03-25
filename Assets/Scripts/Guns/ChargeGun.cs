@@ -100,7 +100,6 @@ public class ChargeGun : DelayableMonoBehaviour
         if (_isCharging)
         {
             _chargeTime += Time.deltaTime;
-            Debug.Log($"[ChargeGun] Charge: {charge}");
 
             _chargePitchSource.pitch = 1f + (charge * pitchRatio); // Increase pitch with charge
             _chargeVolumeSource.volume = charge * volumeRatio;
