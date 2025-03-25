@@ -16,7 +16,9 @@ public class MenuController : DelayableMonoBehaviour
     [SerializeField] private TMP_Text _gunName;
     [SerializeField] private Image _gunCooldownMeter;
     [SerializeField] private Image _gunDamageMeter;
-    [SerializeField] private Image _healthBar;
+    [SerializeField] private Image _healthBarL;
+    [SerializeField] private Image _healthBarR;
+    [SerializeField] private Gradient _healthGradient;
     [SerializeField] private TMP_Text _scoreMeter;
     [SerializeField] private TMP_Text _comboMeter;
     [SerializeField] private ParticleSystem _comboSparks;
@@ -66,9 +68,12 @@ public class MenuController : DelayableMonoBehaviour
     void Update()
     {
         // Lerp health meter
-        if (Mathf.Approximately(_healthBar.fillAmount, _health))
+        if (Mathf.Approximately(_healthBarL.fillAmount, _health))
         {
-            _healthBar.fillAmount = Mathf.Lerp(_healthBar.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
+            _healthBarL.fillAmount = Mathf.Lerp(_healthBarL.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
+            _healthBarR.fillAmount = Mathf.Lerp(_healthBarR.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
+            _healthBarL.color = _healthGradient.Evaluate(_healthBarL.fillAmount);
+            _healthBarR.color = _healthGradient.Evaluate(_healthBarR.fillAmount);
         }
     }
 
