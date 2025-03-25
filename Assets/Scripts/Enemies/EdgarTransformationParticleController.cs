@@ -10,6 +10,7 @@ public class EdgarTransformationParticalController : MonoBehaviour
 
   public void OnTransformationStart()
   {
+    Debug.Log($"[{name}:EdgarTransformationParticalController] OnTransformationStart");
     AudioUtility.PlaySpatialClipAtPoint(transformationSound, transform.position, soundVolume);
 
     gooParticleSystem.Play();

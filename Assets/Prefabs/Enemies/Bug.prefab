@@ -490,9 +490,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ceee239efa72482790fc581bdad1a96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRange: 3
+  attackRange: 5
   attackRate: 5
   attackDamage: 30
+  hitAttackDelay: 1
   attackBone: {fileID: 1877693039957788104}
   attackBoneRadius: 0.1
   headBone: {fileID: 3177396194469493249}

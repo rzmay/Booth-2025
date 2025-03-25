@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Animations;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Damageable))]
@@ -98,11 +96,11 @@ public class EnemyController : MonoBehaviour
 
     // If at any point the animator is not in the attack state but _attacking is true, then
     // attack was interrupted and we must call OnAttackEnd
-    if (_animator && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && _attacking)
-    {
-      Debug.Log($"[{name}:EnemyController] Safeguard caught attacking during state {_animator.GetCurrentAnimatorStateInfo(0).shortNameHash}");
-      OnAttackEnd();
-    }
+    // if (_animator && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && _attacking)
+    // {
+    //   Debug.Log($"[{name}:EnemyController] Safeguard caught attacking during state {_animator.GetCurrentAnimatorStateInfo(0).shortNameHash}");
+    //   OnAttackEnd();
+    // }
 
     // Don't do any of this if dead
     if (_damageable.dead) return;
@@ -128,7 +126,12 @@ public class EnemyController : MonoBehaviour
     // }
 
     // Only attack if within close to stopping range, attack has cooled down, and line of sight
-    if (_attackCooldown <= 0f && HasLineOfSight() && _navAgent.remainingDistance <= attackRange)
+    Debug.Log($"[{name}:EnemyController] Distance to player: {Vector3.Distance(_player.transform.position, transform.position)}");
+    if (
+      _attackCooldown <= 0f &&
+      HasLineOfSight() &&
+      Vector3.Distance(_player.transform.position, transform.position) <= attackRange
+    )
     {
       Attack();
     }
@@ -225,7 +228,7 @@ public class EnemyController : MonoBehaviour
       PlaySound(_hitSounds);
       if (isCritical)
       {
-        Debug.Log($"[EnemyController] playing critical hit sound with volume {1 + _gainBoost}");
+        Debug.Log($"[{name}EnemyController] playing critical hit sound with volume {1 + _gainBoost}");
         PlaySound(_criticalHitSounds, true);
       }
 
@@ -242,6 +245,8 @@ public class EnemyController : MonoBehaviour
 
   public void OnDeathEnd()
   {
+    Debug.Log($"[{name}EnemyController] OnDeathEnd");
+
     // Spawn death particle system
     if (_deathParticle) Instantiate(_deathParticle.gameObject, transform.position, transform.rotation);
 
