@@ -9754,6 +9754,7 @@ GameObject:
   - component: {fileID: 4175510728858963922}
   - component: {fileID: 7704959162714359507}
   - component: {fileID: 8020515479483147995}
+  - component: {fileID: 241066822659532958}
   m_Layer: 7
   m_Name: TractorBeam
   m_TagString: Untagged
@@ -9946,6 +9947,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &241066822659532958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6667687671205259972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a07f270ac36c49789466c75ceb88424c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableSpatialization: 1
+  gainBoostDb: 3
+  enableAcoustics: 1
+  reverbSendDb: 0
 --- !u!1001 &8648944572595741952
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10063,9 +10080,6 @@ PrefabInstance:
       addedObject: {fileID: 6970456196142789547}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8ee3fe200ac234dd1a99405c43a4f41e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3173025425504699954}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8ee3fe200ac234dd1a99405c43a4f41e, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3780920327852932583}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8ee3fe200ac234dd1a99405c43a4f41e, type: 3}
       insertIndex: -1
@@ -10121,23 +10135,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7478bb5480645c98fb72676cd39091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  invincible: 0
   damageAfterDeath: 0
   hitPoints: []
   health: 5
---- !u!114 &3173025425504699954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8414501542447650897}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bc6a23b88361f8498219ac2b71b4317, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _anchorPrefab: {fileID: 0}
-  _followHand: 1
 --- !u!114 &3780920327852932583
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decal: {fileID: 0}
-  _collisionParticleSystem: {fileID: 0}
+  _collisionParticleSystem: {fileID: 1009116710780634285, guid: c2f77ae695c6f4dd4b1ba8e352232e08, type: 3}
   _collisionAudio: {fileID: 8300000, guid: c165dfc3c0a314c11a5ba1f2f1997822, type: 3}
 --- !u!54 &2893434304347796897
 Rigidbody:
@@ -94,11 +94,11 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.2
+  m_Radius: 0.25
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &9174986074272382583
 MonoBehaviour:
@@ -314,7 +314,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 0
+  playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:

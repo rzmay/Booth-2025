@@ -11,6 +11,7 @@ public class Damageable : DelayableMonoBehaviour
         public float multiplier;
     }
 
+    public bool invincible = false;
     public bool damageAfterDeath = false;
     [SerializeField] public List<HitPoint> hitPoints = new();
     public delegate void OnDamage(float health, float damage, bool isCritical);
@@ -44,6 +45,9 @@ public class Damageable : DelayableMonoBehaviour
     {
         // Early return if damage after death disabled
         if (dead && !damageAfterDeath) return;
+
+        // Early return if invincible
+        if (invincible) return;
 
         bool isCritical = false;
         float value = damage;

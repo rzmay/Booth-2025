@@ -9,14 +9,26 @@ public class LookAt : MonoBehaviour
   public bool rotateY = true;
   public bool rotateZ = true;
 
+  private Quaternion _baseRotation;
+
+  void Start()
+  {
+    _baseRotation = transform.localRotation;
+  }
+
   void Update()
   {
-    SmoothLookAt();
+    if (target) SmoothLookAt();
+    else
+    {
+      if (rotationSpeed > 0) transform.localRotation = Quaternion.Slerp(transform.localRotation, _baseRotation, Time.deltaTime * rotationSpeed);
+      else transform.localRotation = _baseRotation;
+    }
   }
 
   private void SmoothLookAt()
   {
-    Vector3 direction = (target?.position ?? transform.position + forward) - transform.position;
+    Vector3 direction = target.position - transform.position;
     Quaternion targetRotation = Quaternion.LookRotation(direction);
 
     Vector3 eulerRotation = targetRotation.eulerAngles;

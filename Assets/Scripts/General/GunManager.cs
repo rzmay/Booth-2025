@@ -50,6 +50,8 @@ public class GunManager : MonoBehaviour
     // Set the menu
     StandardGun standardGun = gun.GetComponent<StandardGun>();
     ChargeGun chargeGun = gun.GetComponent<ChargeGun>();
+    ContinuousGun continuousGun = gun.GetComponent<ContinuousGun>();
+
     if (standardGun)
     {
       MenuController.SetGun(standardGun.name, standardGun.damage, standardGun.rate);
@@ -57,6 +59,10 @@ public class GunManager : MonoBehaviour
     else if (chargeGun)
     {
       MenuController.SetGun(chargeGun.name, chargeGun.externalDamage, chargeGun.rate, chargeGun.chargeRatio);
+    }
+    else if (continuousGun)
+    {
+      MenuController.SetGun(continuousGun.name, continuousGun.damage, 0);
     }
   }
 
@@ -68,7 +74,9 @@ public class GunManager : MonoBehaviour
 
   public void SetGun(int index)
   {
-    if (index > 0 && index < _guns.Count) _gunIndex = index;
+    if (index < 0 || index >= _guns.Count) return;
+
+    _gunIndex = index;
 
     Debug.Log($"Set gun: {_guns[_gunIndex].name}");
     InstantiateCurrent();
@@ -78,9 +86,11 @@ public class GunManager : MonoBehaviour
   {
     if (!_allowSwitching) return;
 
+    Debug.Log($"[GunManager] Switching from {_gunIndex} to {(_gunIndex + 1) % _guns.Count} ({_gunIndex + 1} % {_guns.Count})");
+
     _gunIndex = (_gunIndex + 1) % _guns.Count;
 
-    Debug.Log($"Switched gun: {_guns[_gunIndex].name}");
+    Debug.Log($"[GunManager] Switched gun: {_guns[_gunIndex].name}");
     InstantiateCurrent();
   }
 

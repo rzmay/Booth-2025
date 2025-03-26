@@ -19,8 +19,13 @@ public abstract class Bullet : DelayableMonoBehaviour
     {
         GameObject other = collider.gameObject;
 
-        // Find the rigidbody correlated with this collider
         Rigidbody rb = other.GetComponentInParent<Rigidbody>();
+        Damageable enemy = rb?.gameObject?.GetComponent<Damageable>();
+        if (enemy)
+        {
+            enemy.Damage(damage * damageRatio, collider);
+        }
+
         if (rb)
         {
             float mass = GetComponent<Rigidbody>()?.mass ?? 1;
@@ -30,13 +35,6 @@ public abstract class Bullet : DelayableMonoBehaviour
 
             Vector3 direction = other.transform.position - transform.position;
             rb.AddForceAtPosition(direction.normalized * force, transform.position);
-        }
-
-        // Get damageable on rigidbody
-        Damageable enemy = rb?.gameObject?.GetComponent<Damageable>();
-        if (enemy)
-        {
-            enemy.Damage(damage * damageRatio, collider);
         }
 
         // As long as what we hit wasn't an enemy, add the decal

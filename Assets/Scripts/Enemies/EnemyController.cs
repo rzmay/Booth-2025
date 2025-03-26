@@ -12,6 +12,7 @@ public class EnemyController : MonoBehaviour
   public float attackRate;
   public float attackDamage;
   public float hitAttackDelay;
+
   public Transform attackBone;
   public float attackBoneRadius = 0.1f;
   public Transform headBone;
@@ -47,7 +48,8 @@ public class EnemyController : MonoBehaviour
   private LookAt[] _constraints;
 
 
-  // private float _targetDistance;
+  private float _targetDistance;
+  private float _navAgentSpeed;
 
   private float _attackCooldown;
 
@@ -74,7 +76,8 @@ public class EnemyController : MonoBehaviour
     _attackBoneTrail = attackBone.GetComponent<TrailRenderer>();
     if (_attackBoneTrail) _attackBoneTrail.emitting = false;
 
-    // _targetDistance = _navAgent.stoppingDistance;
+    _targetDistance = _navAgent.stoppingDistance;
+    _navAgentSpeed = _navAgent.speed;
 
     _damageable.onDamage += OnDamage;
 
@@ -105,9 +108,13 @@ public class EnemyController : MonoBehaviour
     // Don't do any of this if dead
     if (_damageable.dead) return;
 
+    // If it's been stopped by a bullet, start it again
+    if (Mathf.Approximately(_navAgent.speed, 0f)) _navAgent.speed = _navAgentSpeed;
+
+    bool hasPath = HasPath();
     bool hasLineOfSight = HasLineOfSight();
 
-    if (_animator != null) _animator.SetFloat("Speed", (_navAgent.velocity.magnitude / _navAgent.speed));
+    if (_animator != null) _animator.SetFloat("Speed", _navAgent.velocity.magnitude / _navAgent.speed);
     if (_player != null) SetConstraintTargets(hasLineOfSight ? _player.transform : null);
 
     if (_audioSource != null && _soundCooldown <= 0 && Random.value < soundFrequency * Time.deltaTime)
@@ -115,21 +122,21 @@ public class EnemyController : MonoBehaviour
       PlaySound(_idleSounds);
     }
 
-    // If the player isn't in sight, we need to get closer
-    // if (!HasLineOfSight())
-    // {
-    //   _navAgent.stoppingDistance = 0.01f;
-    // }
-    // else
-    // {
-    //   _navAgent.stoppingDistance = _targetDistance;
-    // }
+    // If there isn't a direct path to the player, we need to get closer
+    if (!hasPath)
+    {
+      _navAgent.stoppingDistance = 0.01f;
+    }
+    else
+    {
+      _navAgent.stoppingDistance = _targetDistance;
+    }
 
-    // Only attack if within close to stopping range, attack has cooled down, and line of sight
-    Debug.Log($"[{name}:EnemyController] Distance to player: {Vector3.Distance(_player.transform.position, transform.position)}");
+    // Only attack if within close to stopping range, attack has cooled down, and path of attack
     if (
       _attackCooldown <= 0f &&
-      HasLineOfSight() &&
+      !_attacking &&
+      hasPath &&
       Vector3.Distance(_player.transform.position, transform.position) <= attackRange
     )
     {
@@ -142,11 +149,19 @@ public class EnemyController : MonoBehaviour
     if (_attacking && !_hitPlayer) CheckMeleeHit();
   }
 
+  bool HasPath()
+  {
+    return !NavMesh.Raycast(headBone.position, GetDestination(), out _, LayerMask.NameToLayer("Scene"));
+  }
+
   bool HasLineOfSight()
   {
-    return true;
-    // Doesnt seem to be working, debug another time
-    // return !NavMesh.Raycast(headBone.position, GetDestination(), out _, NavMesh.AllAreas);
+    return !Physics.Raycast(
+      headBone.position,
+      (GetDestination() - headBone.position).normalized,
+      Vector3.Distance(headBone.position, GetDestination()) + 1f, // Plus one for safety
+      LayerMask.GetMask("Scene")
+    );
   }
 
   private void SetConstraintTargets(Transform target)
@@ -165,7 +180,9 @@ public class EnemyController : MonoBehaviour
 
   void Attack()
   {
-    _attackCooldown = attackRate;
+    // Obscene cooldown -- when the attack ends, this will be set to something reasonable. This just prevents refires until then
+    // _attackCooldown = 1000f;
+    // In theory something like this would be necessary, but I don't have anything long enough to warrant it
 
     // Play sound
     PlaySound(_attackWindupSounds);
@@ -213,6 +230,17 @@ public class EnemyController : MonoBehaviour
     // If enemy gets hit, any active attack should end
     if (_attacking) OnAttackEnd();
 
+    // Stop him in his tracks
+    _navAgent.speed = 0;
+
+    // Cooldown after hit
+    _attackCooldown = Mathf.Max(_attackCooldown, hitAttackDelay);
+
+    if (isCritical)
+    {
+      PlaySound(_criticalHitSounds, true, -(_gainBoost / 2));
+    }
+
     if (health <= 0)
     {
       // Death sound
@@ -226,19 +254,11 @@ public class EnemyController : MonoBehaviour
     {
       // Hit sounds
       PlaySound(_hitSounds);
-      if (isCritical)
-      {
-        Debug.Log($"[{name}EnemyController] playing critical hit sound with volume {1 + _gainBoost}");
-        PlaySound(_criticalHitSounds, true);
-      }
 
       if (_animator)
       {
         // Animate
         _animator.SetTrigger("Hit");
-
-        // Set attack cooldown
-        _attackCooldown = Mathf.Max(attackRate, hitAttackDelay);
       }
     }
   }
@@ -270,6 +290,7 @@ public class EnemyController : MonoBehaviour
   {
     _hitPlayer = false;
     _attacking = false;
+    _attackCooldown = attackRate;
 
     if (_attackBoneTrail) _attackBoneTrail.emitting = false;
   }
@@ -277,15 +298,15 @@ public class EnemyController : MonoBehaviour
   // Used for instantaneous attacks (such as a firing projectile)
   public void OnAttackHit()
   {
-    if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) return;
-
     PlaySound(_attackSounds);
 
     if (projectile) ProjectileAttack();
     else CheckMeleeHit();
+
+    OnAttackEnd();
   }
 
-  private void PlaySound(List<AudioClip> clips, bool detached = false)
+  private void PlaySound(List<AudioClip> clips, bool detached = false, float gainBoost = 0f)
   {
     if (clips.Count > 0)
     {
@@ -293,7 +314,7 @@ public class EnemyController : MonoBehaviour
 
       if (detached)
       {
-        AudioUtility.PlaySpatialClipAtPointWithVariation(clip, transform.position, 1 + _gainBoost);
+        AudioUtility.PlaySpatialClipAtPointWithVariation(clip, transform.position, 1 + _gainBoost + gainBoost);
       }
       else if (_audioSource)
       {

@@ -8,6 +8,12 @@ public class EdgarTransformationParticalController : MonoBehaviour
   public ParticleSystem gooParticleSystem;
   public ParticleSystem fliesParticleSystem;
 
+  void Start()
+  {
+    // No other scripts are just on edgar, so we'll just trigger his theme here
+    MusicManager.PlayTrack("boss", 0.5f);
+  }
+
   public void OnTransformationStart()
   {
     Debug.Log($"[{name}:EdgarTransformationParticalController] OnTransformationStart");

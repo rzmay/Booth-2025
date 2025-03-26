@@ -35,8 +35,25 @@ public class StandardIssueBullet : Bullet
         AudioUtility.PlaySpatialClipAtPointWithVariation(_collisionAudio, transform.position);
 
         // Apply damage and physics
-        Vector3 normal = collision.contacts.Length == 0 ? -transform.rotation.eulerAngles : collision.contacts[0].normal;
+        Vector3 normal = collision.contacts.Length == 0 ? -transform.forward : collision.contacts[0].normal;
         ApplyDamage(collision.collider, normal);
+
+        // And then die!!!!!!
+        _detachParticleSystems.Detach();
+        Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // Spawn the particle system
+        Instantiate(_collisionParticleSystem.gameObject, transform.position, transform.rotation);
+
+        // Play the sound
+        AudioUtility.PlaySpatialClipAtPointWithVariation(_collisionAudio, transform.position);
+
+        // Apply damage and physics
+        Vector3 normal = -transform.forward;  // Since there are no collision contacts, use the forward direction as fallback
+        ApplyDamage(other, normal);
 
         // And then die!!!!!!
         _detachParticleSystems.Detach();

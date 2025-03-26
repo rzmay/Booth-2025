@@ -350,7 +350,7 @@ MonoBehaviour:
   maxCharge: Infinity
   chargeRatio: 0.5
   cooldownRatio: 0
-  chargeDamping: 2
+  chargeDamping: 1.5
   pitchRatio: 1
   volumeRatio: 1
   bulletIsChild: 0

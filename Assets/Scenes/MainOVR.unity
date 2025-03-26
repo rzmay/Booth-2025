@@ -229,7 +229,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1000011928778752, guid: bac85bcbcdc58924f840d203376147c2, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1000012670117826, guid: bac85bcbcdc58924f840d203376147c2, type: 3}
       propertyPath: m_Layer
@@ -253,7 +253,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114000013861403066, guid: bac85bcbcdc58924f840d203376147c2, type: 3}
       propertyPath: m_PresetInfoIsWorld
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000010030411760, guid: bac85bcbcdc58924f840d203376147c2, type: 3}
       propertyPath: m_AnchorMax.x
@@ -936,6 +936,8 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: e6231082a90464adb8011eb2f77b80fd, type: 3}
   - label: play
     audioClip: {fileID: 8300000, guid: 74fc2f192b6714365b904a4e7d2150b1, type: 3}
+  - label: boss
+    audioClip: {fileID: 8300000, guid: 3bb2ed4984718450babca3dba6e5e901, type: 3}
   - label: lose
     audioClip: {fileID: 8300000, guid: 1b1d4124160984ea99ad57993cd4658a, type: 3}
   - label: win
@@ -1246,6 +1248,7 @@ MonoBehaviour:
   _gunName: {fileID: 230403447}
   _gunCooldownMeter: {fileID: 582834302}
   _gunDamageMeter: {fileID: 1161589422}
+  _gunCooldownLabel: {fileID: 575936781}
   _healthBar: {fileID: 682140314}
   _scoreMeter: {fileID: 214500057}
   _comboMeter: {fileID: 228357370}
@@ -13137,7 +13140,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 936792543}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -14388,7 +14391,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageIntensity: 0.05
-  damagePulseLength: 0.25
+  damagePulseLength: 0.1
   lerpFactor: 5
 --- !u!1 &1127841767
 GameObject:
@@ -16117,6 +16120,8 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       spawnDuration: 45
+      minSpawnInterval: 1
+      maxSpawnInterval: 10
     - prefab: {fileID: 69973811370526878, guid: f62ea55f1db374717acc3bae1f551fcb, type: 3}
       spawner: {fileID: 3780920327852932583, guid: a541a067ed52840eb9f71bdf09761829, type: 3}
       overrideAttempts: 0
@@ -16154,6 +16159,8 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       spawnDuration: 45
+      minSpawnInterval: 5
+      maxSpawnInterval: 10
     scheduledSpawns:
     - prefab: {fileID: 6794408488187737610, guid: 7fcb56b8e51404fdf87434650ad861b3, type: 3}
       spawner: {fileID: 3780920327852932583, guid: a541a067ed52840eb9f71bdf09761829, type: 3}
@@ -16162,84 +16169,13 @@ MonoBehaviour:
       minSpawnCount: 1
       maxSpawnCount: 1
     - prefab: {fileID: 4318361875641920367, guid: d817ea0a0a875410f859939edb3a172f, type: 3}
-      spawner: {fileID: 0}
+      spawner: {fileID: 3780920327852932583, guid: 5042df7de7b6a4eaa8e85b012f28d442, type: 3}
       overrideAttempts: 500
       time: 55
       minSpawnCount: 1
       maxSpawnCount: 1
-  - timedSpawns:
-    - prefab: {fileID: 6794408488187737610, guid: 7fcb56b8e51404fdf87434650ad861b3, type: 3}
-      spawner: {fileID: 0}
-      overrideAttempts: 0
-      spawnProbability:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0.1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 0.25
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      spawnDuration: 45
-    - prefab: {fileID: 69973811370526878, guid: f62ea55f1db374717acc3bae1f551fcb, type: 3}
-      spawner: {fileID: 0}
-      overrideAttempts: 0
-      spawnProbability:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 0.5
-          value: 0
-          inSlope: -0
-          outSlope: 1.3145224
-          tangentMode: 5
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.20832813
-        - serializedVersion: 3
-          time: 1
-          value: 0.2
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      spawnDuration: 45
-    scheduledSpawns:
-    - prefab: {fileID: 4318361875641920367, guid: d817ea0a0a875410f859939edb3a172f, type: 3}
-      spawner: {fileID: 0}
-      overrideAttempts: 0
-      time: 55
-      minSpawnCount: 1
-      maxSpawnCount: 1
+  - timedSpawns: []
+    scheduledSpawns: []
 --- !u!114 &1357835819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20442,6 +20378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7478bb5480645c98fb72676cd39091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  invincible: 0
   damageAfterDeath: 0
   hitPoints: []
   health: 100

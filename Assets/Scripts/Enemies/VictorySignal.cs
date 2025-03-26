@@ -1,16 +1,34 @@
 using UnityEngine;
 
-public class VictorySignal
+[RequireComponent(typeof(Damageable))]
+public class VictorySignal : DelayableMonoBehaviour
 {
+  private Damageable _damageable;
+
+  void Start()
+  {
+    _damageable = GetComponent<Damageable>();
+
+    _damageable.onDamage += OnDamage;
+  }
+
   void OnDestroy()
   {
-    // Change track
-    MusicManager.PlayTrack("win", 1f);
+    _damageable.onDamage -= OnDamage;
+  }
 
-    // Set to empty phase
-    SpawnSequencer.SetPhase(2);
+  void OnDamage(float health, float damage, bool isCritical)
+  {
+    if (health <= 0)
+    {
+      // Victory menu
+      MenuController.SetMenu(3);
 
-    // Set menu to victory
-    MenuController.SetMenu(3);
+      // Victory music
+      MusicManager.PlayTrack("win", 1f);
+
+      // Disable stuff
+      Disabler.DisableAll();
+    }
   }
 }

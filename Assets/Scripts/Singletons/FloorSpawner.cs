@@ -21,6 +21,10 @@ public class FloorSpawner : DelayableMonoBehaviour
   {
     public AnimationCurve spawnProbability;
     public int spawnDuration;
+    public float minSpawnInterval = 0f;
+    public float maxSpawnInterval = -1f;
+
+    [NonSerialized] public float lastSpawn;
   }
 
   [System.Serializable]
@@ -53,7 +57,8 @@ public class FloorSpawner : DelayableMonoBehaviour
   {
     _player = FindFirstObjectByType<Player>();
 
-    _startTime = Time.time;
+    // Restart the timer
+    Restart();
   }
 
   public void Restart()
@@ -82,10 +87,29 @@ public class FloorSpawner : DelayableMonoBehaviour
 
     foreach (var spawnConfig in timedSpawns.Where(config => timeSinceStart <= config.spawnDuration))
     {
+      // last spawn should at least be greater than the start time
+      spawnConfig.lastSpawn = Mathf.Max(spawnConfig.lastSpawn, _startTime);
+
+      // Spawn by probability
       float durationPercentage = timeSinceStart / spawnConfig.spawnDuration;
-      if (Random.value < (spawnConfig.spawnProbability.Evaluate(durationPercentage) * Time.deltaTime))
+      float spawnProbability = spawnConfig.spawnProbability.Evaluate(durationPercentage);
+
+      bool probabilitySpawn = (
+        Random.value < (spawnProbability * Time.deltaTime) &&
+        (Time.time - spawnConfig.lastSpawn) > spawnConfig.minSpawnInterval
+      );
+
+      // Spawn by max interval
+      bool intervalSpawn = (
+        !Mathf.Approximately(spawnProbability, 0f) &&
+        spawnConfig.maxSpawnInterval > 0f &&
+        (Time.time - spawnConfig.lastSpawn) > spawnConfig.maxSpawnInterval
+      );
+
+      if (intervalSpawn || probabilitySpawn)
       {
-        TrySpawnObjectOnFloor(spawnConfig);
+        bool spawned = TrySpawnObjectOnFloor(spawnConfig);
+        if (spawned) spawnConfig.lastSpawn = Time.time;
       }
     }
   }
@@ -180,7 +204,7 @@ public class FloorSpawner : DelayableMonoBehaviour
     if (prefabCollider == null) return false;
 
     Collider[] hitColliders = Physics.OverlapBox(
-        prefabCollider.bounds.center,
+        position,
         prefabCollider.bounds.extents,
         Quaternion.identity, // since bounds are axis-aligned
         _obstructionMask
@@ -203,7 +227,7 @@ public class FloorSpawner : DelayableMonoBehaviour
     if (!spawnConfig.spawner) Instantiate(spawnConfig.prefab, location, rotation);
     else
     {
-      Spawner spawnerObject = Instantiate(spawnConfig.spawner);
+      Spawner spawnerObject = Instantiate(spawnConfig.spawner.gameObject).GetComponent<Spawner>();
       spawnerObject.prefab = spawnConfig.prefab;
       spawnerObject.targetPosition = location;
       spawnerObject.targetRotation = rotation;

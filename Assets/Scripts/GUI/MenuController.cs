@@ -18,6 +18,7 @@ public class MenuController : DelayableMonoBehaviour
     [SerializeField] private TMP_Text _gunName;
     [SerializeField] private Image _gunCooldownMeter;
     [SerializeField] private Image _gunDamageMeter;
+    [SerializeField] private TMP_Text _gunCooldownLabel;
     [SerializeField] private Image _healthBar;
     [SerializeField] private TMP_Text _scoreMeter;
     [SerializeField] private TMP_Text _comboMeter;
@@ -135,6 +136,10 @@ public class MenuController : DelayableMonoBehaviour
 
         // If it's not a charge gun, have the charge meter full
         if (chargeSpeed == 0) _gunDamageMeter.fillAmount = 1f;
+
+        // Continuous guns should not have a cooldown meter or label
+        _gunCooldownMeter.gameObject.SetActive(cooldown != 0);
+        _gunCooldownLabel.gameObject.SetActive(cooldown != 0);
 
         // Gun cooldown meter should always start full
         _gunCooldownMeter.fillAmount = 1f;

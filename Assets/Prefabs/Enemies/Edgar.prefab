@@ -10431,9 +10431,9 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: f99ac4aed42c54ef9bcea505578117ec, type: 3}
   m_Controller: {fileID: 9100000, guid: fd606af040620410f96c9554e6a89c8d, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -10483,7 +10483,7 @@ NavMeshAgent:
   m_Acceleration: 0.25
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 1.5
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -10535,6 +10535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7478bb5480645c98fb72676cd39091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  invincible: 0
   damageAfterDeath: 0
   hitPoints:
   - collider: {fileID: 2738528267335024449}
@@ -10552,17 +10553,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ceee239efa72482790fc581bdad1a96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRange: 1.5
-  attackRate: 5
+  attackRange: 2.5
+  attackRate: 3
   attackDamage: 20
-  hitAttackDelay: 1
+  hitAttackDelay: 0.5
   attackBone: {fileID: 4686446104824946087}
   attackBoneRadius: 0.5
   headBone: {fileID: 4830652466419149004}
   projectile: {fileID: 0}
   projectileSpeed: 0
   projectileSpread: 0.1
-  _nextPhase: {fileID: 6815376628580389523, guid: 829bf41828ef84387b98aae1af128e65, type: 3}
+  _nextPhase: {fileID: -7730952571752540475, guid: 0e2da91e2261a4fcc8512ae7d4e7fbc2, type: 3}
   _deathParticle: {fileID: 1009116710780634285, guid: ff468a85af0ed4384a00be6b5020c1b2, type: 3}
   _spawnSounds:
   - {fileID: 8300000, guid: a3e2985563d954dff840d79cf1967557, type: 3}
