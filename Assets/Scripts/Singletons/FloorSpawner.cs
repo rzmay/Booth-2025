@@ -11,6 +11,7 @@ public class FloorSpawner : DelayableMonoBehaviour
 
   public class SpawnConfig
   {
+    public bool enabled = true;
     public GameObject prefab;
     public Spawner spawner;
     public int overrideAttempts;
@@ -73,7 +74,7 @@ public class FloorSpawner : DelayableMonoBehaviour
     // Don't try spawning anything unless we have navmesh data
     if (!_navMeshReady) return;
 
-    foreach (var spawnConfig in scheduledSpawns.Where(config => timeSinceStart >= config.time && !config.spawned))
+    foreach (var spawnConfig in scheduledSpawns.Where(config => timeSinceStart >= config.time && !config.spawned && config.enabled))
     {
       int count = Random.Range(spawnConfig.minSpawnCount, spawnConfig.maxSpawnCount + 1);
       for (int i = 0; i < count; i++)
@@ -85,7 +86,7 @@ public class FloorSpawner : DelayableMonoBehaviour
       spawnConfig.spawned = true;
     }
 
-    foreach (var spawnConfig in timedSpawns.Where(config => timeSinceStart <= config.spawnDuration))
+    foreach (var spawnConfig in timedSpawns.Where(config => timeSinceStart <= config.spawnDuration && config.enabled))
     {
       // last spawn should at least be greater than the start time
       spawnConfig.lastSpawn = Mathf.Max(spawnConfig.lastSpawn, _startTime);
@@ -125,16 +126,19 @@ public class FloorSpawner : DelayableMonoBehaviour
       if (_player)
       {
         Vector3 direction = _player.transform.position - transform.position;
-        Vector3 flatDirection = Vector3.ProjectOnPlane(direction, Vector3.up);
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
 
-        yaw = Vector3.SignedAngle(transform.forward, flatDirection, Vector3.up);
+        Debug.Log($"[FloorSpawner] Spawning {spawnConfig.prefab.name} facing player with yaw {targetRotation.eulerAngles.y}");
+
+        yaw = targetRotation.eulerAngles.y;
       }
       else
       {
         yaw = Random.Range(0f, 360f);
       }
 
-      Quaternion rotation = spawnConfig.prefab.transform.rotation * Quaternion.Euler(Vector3.up * yaw);
+      Quaternion rotation = Quaternion.Euler(Vector3.up * yaw);
+      Debug.Log($"[FloorSpawner] Final rotation: {rotation.eulerAngles}");
 
       SpawnObject(spawnConfig, location.Value, rotation);
       return true; // Successfully spawned, no need to continue

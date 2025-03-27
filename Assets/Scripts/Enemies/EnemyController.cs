@@ -56,6 +56,7 @@ public class EnemyController : MonoBehaviour
   private float _soundCooldown;
   private float _gainBoost = 0f;
 
+  private bool _startingAttack = false;
   private bool _attacking = false;
   private bool _hitPlayer = false;
 
@@ -102,7 +103,7 @@ public class EnemyController : MonoBehaviour
     // if (_animator && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && _attacking)
     // {
     //   Debug.Log($"[{name}:EnemyController] Safeguard caught attacking during state {_animator.GetCurrentAnimatorStateInfo(0).shortNameHash}");
-    //   OnAttackEnd();
+    //   EndAttack();
     // }
 
     // Don't do any of this if dead
@@ -135,6 +136,7 @@ public class EnemyController : MonoBehaviour
     // Only attack if within close to stopping range, attack has cooled down, and path of attack
     if (
       _attackCooldown <= 0f &&
+      !_startingAttack &&
       !_attacking &&
       hasPath &&
       Vector3.Distance(_player.transform.position, transform.position) <= attackRange
@@ -180,12 +182,14 @@ public class EnemyController : MonoBehaviour
 
   void Attack()
   {
-    // Obscene cooldown -- when the attack ends, this will be set to something reasonable. This just prevents refires until then
-    // _attackCooldown = 1000f;
-    // In theory something like this would be necessary, but I don't have anything long enough to warrant it
+    Debug.Log($"[{name}:EnemyController] Attacking -- {(_animator ? "animating" : "not animating")}");
+
+    _startingAttack = true;
 
     // Play sound
     PlaySound(_attackWindupSounds);
+
+    Debug.Log($"[{name}:EnemyController] SetTrigger Attack");
 
     if (_animator) _animator.SetTrigger("Attack");
     else OnAttackHit();
@@ -228,7 +232,7 @@ public class EnemyController : MonoBehaviour
   void OnDamage(float health, float damage, bool isCritical)
   {
     // If enemy gets hit, any active attack should end
-    if (_attacking) OnAttackEnd();
+    if (_startingAttack || _attacking) EndAttack(true);
 
     // Stop him in his tracks
     _navAgent.speed = 0;
@@ -246,6 +250,8 @@ public class EnemyController : MonoBehaviour
       // Death sound
       PlaySound(_deathSounds, true);
 
+      Debug.Log($"[{name}:EnemyController] SetTrigger Death");
+
       // Animate or deathend
       if (_animator) _animator.SetTrigger("Death");
       else OnDeathEnd();
@@ -257,6 +263,8 @@ public class EnemyController : MonoBehaviour
 
       if (_animator)
       {
+        Debug.Log($"[{name}:EnemyController] SetTrigger Hit");
+
         // Animate
         _animator.SetTrigger("Hit");
       }
@@ -282,15 +290,29 @@ public class EnemyController : MonoBehaviour
   // Used for attacks spanning some time
   public void OnAttackStart()
   {
+    Debug.Log($"[{name}:EnemyController] OnAttackStart -- _startingAttack = {_startingAttack}");
+    // If _startingAttack is not true, then this was interrupted -- we won't start the attack
+    if (!_startingAttack) return;
+
     _attacking = true;
     if (_attackBoneTrail) _attackBoneTrail.emitting = true;
   }
 
   public void OnAttackEnd()
   {
+    Debug.Log($"[{name}:EnemyController] OnAttackEND");
+
+    EndAttack();
+  }
+
+  public void EndAttack(bool interrupted = false)
+  {
+    Debug.Log($"[{name}:EnemyController] EndAttack -- interrupted = {interrupted}");
+
     _hitPlayer = false;
     _attacking = false;
-    _attackCooldown = attackRate;
+    _startingAttack = false;
+    _attackCooldown = interrupted ? hitAttackDelay : attackRate;
 
     if (_attackBoneTrail) _attackBoneTrail.emitting = false;
   }
@@ -303,7 +325,7 @@ public class EnemyController : MonoBehaviour
     if (projectile) ProjectileAttack();
     else CheckMeleeHit();
 
-    OnAttackEnd();
+    EndAttack();
   }
 
   private void PlaySound(List<AudioClip> clips, bool detached = false, float gainBoost = 0f)

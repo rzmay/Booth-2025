@@ -1188,7 +1188,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 1875943311}
-  m_PlaneDistance: 1
+  m_PlaneDistance: 0.5
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -11891,7 +11891,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40.3
+  m_fontSize: 40.25
   m_fontSizeBase: 256
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -13228,7 +13228,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40.3
+  m_fontSize: 40.25
   m_fontSizeBase: 256
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -16085,14 +16085,16 @@ MonoBehaviour:
   phases:
   - timedSpawns: []
     scheduledSpawns:
-    - prefab: {fileID: 6566548621220048320, guid: b69c29273010c42a0be7c8f0d1b46c7f, type: 3}
+    - enabled: 1
+      prefab: {fileID: 6566548621220048320, guid: b69c29273010c42a0be7c8f0d1b46c7f, type: 3}
       spawner: {fileID: 0}
       overrideAttempts: 500
       time: 0
       minSpawnCount: 1
       maxSpawnCount: 1
   - timedSpawns:
-    - prefab: {fileID: 6794408488187737610, guid: 7fcb56b8e51404fdf87434650ad861b3, type: 3}
+    - enabled: 0
+      prefab: {fileID: 6794408488187737610, guid: 7fcb56b8e51404fdf87434650ad861b3, type: 3}
       spawner: {fileID: 3780920327852932583, guid: a541a067ed52840eb9f71bdf09761829, type: 3}
       overrideAttempts: 0
       spawnProbability:
@@ -16122,7 +16124,8 @@ MonoBehaviour:
       spawnDuration: 45
       minSpawnInterval: 1
       maxSpawnInterval: 10
-    - prefab: {fileID: 69973811370526878, guid: f62ea55f1db374717acc3bae1f551fcb, type: 3}
+    - enabled: 0
+      prefab: {fileID: 69973811370526878, guid: f62ea55f1db374717acc3bae1f551fcb, type: 3}
       spawner: {fileID: 3780920327852932583, guid: a541a067ed52840eb9f71bdf09761829, type: 3}
       overrideAttempts: 0
       spawnProbability:
@@ -16162,16 +16165,18 @@ MonoBehaviour:
       minSpawnInterval: 5
       maxSpawnInterval: 10
     scheduledSpawns:
-    - prefab: {fileID: 6794408488187737610, guid: 7fcb56b8e51404fdf87434650ad861b3, type: 3}
+    - enabled: 0
+      prefab: {fileID: 6794408488187737610, guid: 7fcb56b8e51404fdf87434650ad861b3, type: 3}
       spawner: {fileID: 3780920327852932583, guid: a541a067ed52840eb9f71bdf09761829, type: 3}
       overrideAttempts: 0
       time: 0
       minSpawnCount: 1
       maxSpawnCount: 1
-    - prefab: {fileID: 4318361875641920367, guid: d817ea0a0a875410f859939edb3a172f, type: 3}
+    - enabled: 1
+      prefab: {fileID: 4318361875641920367, guid: d817ea0a0a875410f859939edb3a172f, type: 3}
       spawner: {fileID: 3780920327852932583, guid: 5042df7de7b6a4eaa8e85b012f28d442, type: 3}
       overrideAttempts: 500
-      time: 55
+      time: 0
       minSpawnCount: 1
       maxSpawnCount: 1
   - timedSpawns: []
@@ -17605,7 +17610,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.15
+  m_fontSize: 20.1
   m_fontSizeBase: 96
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -19694,7 +19699,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40.3
+  m_fontSize: 40.25
   m_fontSizeBase: 256
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -19986,7 +19991,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40.3
+  m_fontSize: 40.25
   m_fontSizeBase: 256
   m_fontWeight: 400
   m_enableAutoSizing: 1
