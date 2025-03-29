@@ -17,9 +17,13 @@ public class MenuController : DelayableMonoBehaviour
     [SerializeField] private TMP_Text _gunDetectedName;
     [SerializeField] private TMP_Text _gunName;
     [SerializeField] private Image _gunCooldownMeter;
-    [SerializeField] private Image _gunDamageMeter;
+    [SerializeField] private Gradient _gunCooldownGradient;
+    //[SerializeField] private Image _gunDamageMeter;
+    [SerializeField] private RawImage _gunDamageMeterRaw;
     [SerializeField] private TMP_Text _gunCooldownLabel;
-    [SerializeField] private Image _healthBar;
+    [SerializeField] private Image _healthBarR;
+    [SerializeField] private Image _healthBarL;
+    [SerializeField] private Gradient _healthBarGradient;
     [SerializeField] private TMP_Text _scoreMeter;
     [SerializeField] private TMP_Text _comboMeter;
     [SerializeField] private ParticleSystem _comboSparks;
@@ -41,6 +45,7 @@ public class MenuController : DelayableMonoBehaviour
 
     // Saved to control charge meter graphics
     private float _chargeSpeed;
+    private float _dmgMeter;
 
     // Save for smooth lerping
     private float _health;
@@ -61,7 +66,8 @@ public class MenuController : DelayableMonoBehaviour
 
         // Health starts full
         _health = 1f;
-        _healthBar.fillAmount = 1f;
+        _healthBarL.fillAmount = 1f;
+        _healthBarR.fillAmount = 1f;
 
         // Set initial menu
         SetMenu(0);
@@ -76,13 +82,17 @@ public class MenuController : DelayableMonoBehaviour
     void Update()
     {
         // Lerp health meter
-        if (!Mathf.Approximately(_healthBar.fillAmount, _health))
+        if (!Mathf.Approximately(_healthBarL.fillAmount, _health))
         {
-            _healthBar.fillAmount = Mathf.Lerp(_healthBar.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
+            _healthBarL.fillAmount = Mathf.Lerp(_healthBarL.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
+            _healthBarR.fillAmount = Mathf.Lerp(_healthBarR.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
+            _healthBarL.color = _healthBarGradient.Evaluate(_healthBarL.fillAmount);
+            _healthBarR.color = _healthBarGradient.Evaluate(_healthBarL.fillAmount);
         }
         else
         {
-            _healthBar.fillAmount = _health;
+            _healthBarL.fillAmount = _health;
+            _healthBarR.fillAmount = _health;
         }
 
         // Lerp menu opacity
@@ -131,11 +141,12 @@ public class MenuController : DelayableMonoBehaviour
         _gunName.text = name;
         _chargeSpeed = chargeSpeed;
 
-        _gunDamageMeter.rectTransform.sizeDelta = new Vector2(damage, 1);
+        //_gunDamageMeter.rectTransform.sizeDelta = new Vector2(damage, 1);
         _gunCooldownMeter.rectTransform.sizeDelta = new Vector2(cooldown, 1);
 
         // If it's not a charge gun, have the charge meter full
-        if (chargeSpeed == 0) _gunDamageMeter.fillAmount = 1f;
+        //if (chargeSpeed == 0) _gunDamageMeter.fillAmount = 1f;
+        if (chargeSpeed == 0) _dmgMeter = 1f;
 
         // Continuous guns should not have a cooldown meter or label
         _gunCooldownMeter.gameObject.SetActive(cooldown != 0);
@@ -151,13 +162,16 @@ public class MenuController : DelayableMonoBehaviour
     void _SetCharge(float charge)
     {
         // Asymptotically towards full
-        _gunDamageMeter.fillAmount = 1f - (1f / Mathf.Pow(charge + 1f, _chargeSpeed));
+        //_gunDamageMeter.fillAmount = 1f - (1f / Mathf.Pow(charge + 1f, _chargeSpeed));
+        _dmgMeter = 1f - (1f / Mathf.Pow(charge + 1f, _chargeSpeed));
+        _gunDamageMeterRaw.uvRect = new Rect(0, 0, _dmgMeter, 1);
     }
 
     void _SetCooldown(float cooldown)
     {
         // Linearl fill
         _gunCooldownMeter.fillAmount = 1f - cooldown;
+        _gunCooldownMeter.color = _gunCooldownGradient.Evaluate(_gunCooldownMeter.fillAmount);
     }
 
     void _SetScore(int score, int combo, float comboTime)
