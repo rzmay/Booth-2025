@@ -12,8 +12,15 @@ public class ScoreTracker : MonoBehaviour
     private int _currentComboCount = 0;
     private int _score;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // Accuracy tracking
+    private int _shotsFired;
+    private int _shotsHit;
+
+    // UFO and Alien tracking
+    private int _aliensDefeated;
+    private int _ufosDestroyed;
+
+    void Awake()
     {
         _Instance = this;
     }
@@ -46,8 +53,40 @@ public class ScoreTracker : MonoBehaviour
         MenuController.SetScore(_score, _currentComboCount, _currentComboTime);
     }
 
+    public static void TrackAliens()
+    {
+        _Instance._aliensDefeated += 1;
+    }
+
+    public static void TrackUFOs()
+    {
+        _Instance._ufosDestroyed += 1;
+    }
+
+    public static void TrackShotsFired()
+    {
+        _Instance._shotsFired += 1;
+    }
+
+    public static void TrackShotsHit()
+    {
+        _Instance._shotsHit += 1;
+    }
+
     public static void Kill(int points)
     {
         _Instance._TrackPoints(points);
+    }
+
+    public static void Print(bool won)
+    {
+        ReceiptController.SetStats(
+            _Instance._aliensDefeated,
+            _Instance._ufosDestroyed,
+            _Instance._shotsHit / _Instance._shotsFired,
+            won
+        );
+
+        ReceiptController.Print();
     }
 }

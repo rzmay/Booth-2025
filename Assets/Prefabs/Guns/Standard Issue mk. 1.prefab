@@ -249,6 +249,7 @@ MonoBehaviour:
   damage: 4
   rate: 0.5
   bulletSpeed: 10
+  image: {fileID: 2800000, guid: 3ad3984b6d809473a812e25c304d0c0e, type: 3}
   _bullet: {fileID: 1584737518444271338, guid: 8aff0127236174953b4419e0b9cf1afd, type: 3}
   _fireSound: {fileID: 8300000, guid: eedec73126a6746f58c7105ed07c24a4, type: 3}
   _reloadSound: {fileID: 0}

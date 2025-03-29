@@ -146,6 +146,9 @@ public class UFOSpawner : Spawner
     {
       _hit = true;
 
+      // Track
+      ScoreTracker.TrackUFOs();
+
       // Hopefully this preserves the force applied, we'll have to see
       _rigidbody.isKinematic = false;
       _tractorBeam.SetActive(false);

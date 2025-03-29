@@ -355,6 +355,7 @@ MonoBehaviour:
   volumeRatio: 1
   bulletIsChild: 1
   externalDamage: 1
+  image: {fileID: 2800000, guid: 83b9c6a9266f14f54860f1cf1fcd331f, type: 3}
   _bullet: {fileID: 3475049374207461500, guid: 5815be0c2db504e4393902efb199507f, type: 3}
   _fireSound: {fileID: 8300000, guid: 0a2650bd49a91464588831d3968eb428, type: 3}
   _chargePitchSound: {fileID: 8300000, guid: e5b68449e85c44afa9f2185058011744, type: 3}

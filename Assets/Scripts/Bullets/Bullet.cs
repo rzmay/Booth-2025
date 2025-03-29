@@ -17,12 +17,16 @@ public abstract class Bullet : DelayableMonoBehaviour
 
     protected void ApplyDamage(Collider collider, Vector3 normal, float damageRatio = 1f)
     {
+
         GameObject other = collider.gameObject;
 
         Rigidbody rb = other.GetComponentInParent<Rigidbody>();
         Damageable enemy = rb?.gameObject?.GetComponent<Damageable>();
         if (enemy)
         {
+            // Track
+            ScoreTracker.TrackShotsHit();
+
             enemy.Damage(damage * damageRatio, collider);
         }
 

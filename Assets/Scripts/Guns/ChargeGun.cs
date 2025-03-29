@@ -30,6 +30,9 @@ public class ChargeGun : DelayableMonoBehaviour
         }
     }
 
+    // Image used when printing
+    public Texture2D image;
+
     // Prefabs
     [SerializeField]
     private Bullet _bullet;
@@ -135,6 +138,9 @@ public class ChargeGun : DelayableMonoBehaviour
 
         if (_chargeTime >= minChargeTime)
         {
+            // Track
+            ScoreTracker.TrackShotsFired();
+
             // Set reload time
             _timeUntilReady = rate + (cooldownRatio * charge);
 

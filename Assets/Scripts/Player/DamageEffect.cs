@@ -10,7 +10,6 @@ public class DamageEffect : MonoBehaviour
   public float lerpFactor = 2f;
 
   private float _intensity = 0f;
-  private Damageable _damageable;
   private RawImage _image;
 
 
@@ -18,8 +17,6 @@ public class DamageEffect : MonoBehaviour
   {
     _image = GetComponent<RawImage>();
     _image.material?.SetFloat("_Intensity", 0f);
-
-    _damageable.onDamage += OnDamage;
   }
 
   void Update()
@@ -36,10 +33,5 @@ public class DamageEffect : MonoBehaviour
   {
     // Set peak intensity
     _intensity = Mathf.Clamp01(damageAmount * damageIntensity);
-  }
-
-  void OnDamage(float health, float damage, bool _)
-  {
-    TriggerDamageEffect(damage);
   }
 }

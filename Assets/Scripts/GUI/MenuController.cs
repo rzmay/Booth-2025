@@ -46,7 +46,7 @@ public class MenuController : DelayableMonoBehaviour
     private float _health;
 
     // For highest combo in game over screen
-    private float _highestCombo;
+    private int _highestCombo;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -123,7 +123,7 @@ public class MenuController : DelayableMonoBehaviour
         }
     }
 
-    void _SetGun(string name, float damage, float cooldown, float chargeSpeed)
+    void _SetGun(string name, Texture2D image, float damage, float cooldown, float chargeSpeed)
     {
         _gunDetectedName.gameObject.SetActive(true);
         _gunDetectedName.text = name;
@@ -143,6 +143,9 @@ public class MenuController : DelayableMonoBehaviour
 
         // Gun cooldown meter should always start full
         _gunCooldownMeter.fillAmount = 1f;
+
+        // Set receipt controller
+        ReceiptController.SetGun(name, image);
     }
 
     void _SetCharge(float charge)
@@ -178,6 +181,9 @@ public class MenuController : DelayableMonoBehaviour
             _gameOverComboMeter.text = combo.ToString("0000");
             _victoryComboMeter.text = combo.ToString("0000");
         }
+
+        // Set receipt controller
+        ReceiptController.SetScore(score, _highestCombo);
     }
 
     void _SetHealth(float health)
@@ -195,9 +201,9 @@ public class MenuController : DelayableMonoBehaviour
         _Instance._SetMenu(index);
     }
 
-    public static void SetGun(string name, float damage, float cooldown, float chargeSpeed = 0f)
+    public static void SetGun(string name, Texture2D image, float damage, float cooldown, float chargeSpeed = 0f)
     {
-        _Instance._SetGun(name, damage, cooldown, chargeSpeed);
+        _Instance._SetGun(name, image, damage, cooldown, chargeSpeed);
     }
 
     public static void SetCharge(float charge)

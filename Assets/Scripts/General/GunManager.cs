@@ -54,15 +54,15 @@ public class GunManager : MonoBehaviour
 
     if (standardGun)
     {
-      MenuController.SetGun(standardGun.name, standardGun.damage, standardGun.rate);
+      MenuController.SetGun(standardGun.name, standardGun.image, standardGun.damage, standardGun.rate);
     }
     else if (chargeGun)
     {
-      MenuController.SetGun(chargeGun.name, chargeGun.externalDamage, chargeGun.rate, chargeGun.chargeRatio);
+      MenuController.SetGun(chargeGun.name, chargeGun.image, chargeGun.externalDamage, chargeGun.rate, chargeGun.chargeRatio);
     }
     else if (continuousGun)
     {
-      MenuController.SetGun(continuousGun.name, continuousGun.damage, 0);
+      MenuController.SetGun(continuousGun.name, continuousGun.image, continuousGun.damage, 0);
     }
   }
 

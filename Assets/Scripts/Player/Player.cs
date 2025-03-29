@@ -33,7 +33,9 @@ public class Player : MonoBehaviour
         {
             // Set music and menu
             MusicManager.PlayTrack("lose", 0f);
-            MenuController.SetMenu(2);
+
+            // Print
+            ScoreTracker.Print(false);
 
             // Stop all enemies
             Disabler.DisableAll();

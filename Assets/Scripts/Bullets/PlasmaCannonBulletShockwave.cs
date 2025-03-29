@@ -67,6 +67,9 @@ public class PlasmaCannonBulletShockwave : MonoBehaviour
         Damageable enemy = other.GetComponentInParent<Damageable>();
         if (enemy && !_hits.Contains(enemy))
         {
+            // Track
+            ScoreTracker.TrackShotsHit();
+
             enemy.Damage(_damage, other);
             _hits.Add(enemy);
         }

@@ -10,6 +10,9 @@ public class StandardGun : MonoBehaviour
     public float rate = 1f;
     public float bulletSpeed = 1f;
 
+    // Image used when printing
+    public Texture2D image;
+
     // Prefabs
     [SerializeField]
     private Bullet _bullet;
@@ -67,6 +70,9 @@ public class StandardGun : MonoBehaviour
     {
         // Don't fire if not ready yet....
         if (_timeUntilReady > 0) return;
+
+        // Track
+        ScoreTracker.TrackShotsFired();
 
         _timeUntilReady = rate;
 

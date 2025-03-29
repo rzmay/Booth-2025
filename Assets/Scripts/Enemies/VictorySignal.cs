@@ -24,6 +24,9 @@ public class VictorySignal : DelayableMonoBehaviour
       // Victory menu
       MenuController.SetMenu(3);
 
+      // Receipt menu
+      ScoreTracker.Print(true);
+
       // Victory music
       MusicManager.PlayTrack("win", 1f);
 

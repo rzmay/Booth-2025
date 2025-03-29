@@ -11,6 +11,9 @@ public class ContinuousGun : DelayableMonoBehaviour
     public float rate = 1f;
     public float bulletSpeed = 1f;
 
+    // Image used when printing
+    public Texture2D image;
+
     // Prefabs
     [SerializeField]
     private Bullet _bullet;
@@ -82,6 +85,9 @@ public class ContinuousGun : DelayableMonoBehaviour
         // Fire a new bullet
         if (_timeUntilReady <= 0)
         {
+            // Track
+            ScoreTracker.TrackShotsFired();
+
             // Set reload time
             _timeUntilReady = rate;
 

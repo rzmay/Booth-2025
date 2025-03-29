@@ -247,6 +247,9 @@ public class EnemyController : MonoBehaviour
 
     if (health <= 0)
     {
+      // Track
+      if (!_nextPhase) ScoreTracker.TrackAliens();
+
       // Death sound
       PlaySound(_deathSounds, true);
 
