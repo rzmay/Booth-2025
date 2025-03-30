@@ -145,7 +145,6 @@ public class MenuController : DelayableMonoBehaviour
         _gunCooldownMeter.rectTransform.sizeDelta = new Vector2(cooldown, 1);
 
         // If it's not a charge gun, have the charge meter full
-        //if (chargeSpeed == 0) _gunDamageMeter.fillAmount = 1f;
         if (chargeSpeed == 0) _dmgMeter = 1f;
 
         // Continuous guns should not have a cooldown meter or label
@@ -162,7 +161,6 @@ public class MenuController : DelayableMonoBehaviour
     void _SetCharge(float charge)
     {
         // Asymptotically towards full
-        //_gunDamageMeter.fillAmount = 1f - (1f / Mathf.Pow(charge + 1f, _chargeSpeed));
         _dmgMeter = 1f - (1f / Mathf.Pow(charge + 1f, _chargeSpeed));
         _gunDamageMeterRaw.uvRect = new Rect(0, 0, _dmgMeter, 1);
     }
