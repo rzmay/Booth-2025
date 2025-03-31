@@ -83,7 +83,7 @@ public class ScoreTracker : MonoBehaviour
         ReceiptController.SetStats(
             _Instance._aliensDefeated,
             _Instance._ufosDestroyed,
-            _Instance._shotsHit / _Instance._shotsFired,
+            (_Instance._shotsHit * 100) / _Instance._shotsFired,
             won
         );
 

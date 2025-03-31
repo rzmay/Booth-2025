@@ -58,7 +58,8 @@ public class GunManager : MonoBehaviour
     }
     else if (chargeGun)
     {
-      MenuController.SetGun(chargeGun.name, chargeGun.image, chargeGun.externalDamage, chargeGun.rate, chargeGun.chargeRatio);
+      // Magic number 1.5f to make the menu nicer lol
+      MenuController.SetGun(chargeGun.name, chargeGun.image, chargeGun.externalDamage, chargeGun.rate, chargeGun.chargeRatio * 1.5f);
     }
     else if (continuousGun)
     {
@@ -78,7 +79,6 @@ public class GunManager : MonoBehaviour
 
     _gunIndex = index;
 
-    Debug.Log($"Set gun: {_guns[_gunIndex].name}");
     InstantiateCurrent();
   }
 
@@ -86,11 +86,8 @@ public class GunManager : MonoBehaviour
   {
     if (!_allowSwitching) return;
 
-    Debug.Log($"[GunManager] Switching from {_gunIndex} to {(_gunIndex + 1) % _guns.Count} ({_gunIndex + 1} % {_guns.Count})");
-
     _gunIndex = (_gunIndex + 1) % _guns.Count;
 
-    Debug.Log($"[GunManager] Switched gun: {_guns[_gunIndex].name}");
     InstantiateCurrent();
   }
 

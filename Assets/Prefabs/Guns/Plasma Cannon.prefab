@@ -348,13 +348,13 @@ MonoBehaviour:
   rate: 1
   speed: 8
   maxCharge: Infinity
-  chargeRatio: 0.5
-  cooldownRatio: 0
+  chargeRatio: 0.75
+  cooldownRatio: 0.5
   chargeDamping: 1.5
   pitchRatio: 1
   volumeRatio: 1
   bulletIsChild: 0
-  externalDamage: 1
+  externalDamage: 8
   image: {fileID: 2800000, guid: f49986f60c8f04c8dbd35e19957808a2, type: 3}
   _bullet: {fileID: 8006190057754110462, guid: 2b0a81d49f8e247aea29980fadf62dd0, type: 3}
   _fireSound: {fileID: 8300000, guid: 7628ab6e1f4584c6d9e3b123cb9e2e08, type: 3}

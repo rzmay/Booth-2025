@@ -390,6 +390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7478bb5480645c98fb72676cd39091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  invincible: 0
   damageAfterDeath: 0
   hitPoints: []
   health: 10
@@ -408,12 +409,13 @@ MonoBehaviour:
   attackRange: 6
   attackRate: 3
   attackDamage: 10
+  hitAttackDelay: 0
   attackBone: {fileID: 4115006593370177698}
   attackBoneRadius: 0.1
   headBone: {fileID: 2753690859794354968}
   projectile: {fileID: 7616765984169536439, guid: 656e7b433b3e549a597574b429672681, type: 3}
   projectileSpeed: 2
-  projectileSpread: 0.2
+  projectileSpread: 0.15
   _nextPhase: {fileID: 0}
   _deathParticle: {fileID: 3119552674235243503, guid: 63b184f49b42149939bf8710e6dd696d, type: 3}
   _spawnSounds:
@@ -447,7 +449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01805c7ede46844ea91f526f40d6fa1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  points: 20
+  points: 25
 --- !u!82 &3146792030250135329
 AudioSource:
   m_ObjectHideFlags: 0

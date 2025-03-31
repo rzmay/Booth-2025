@@ -34,7 +34,7 @@ public class PlasmaCannonBulletShockwave : MonoBehaviour
         }
     }
 
-    private HashSet<Damageable> _hits = new();
+    private HashSet<GameObject> _hits = new();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -65,13 +65,14 @@ public class PlasmaCannonBulletShockwave : MonoBehaviour
     {
         // Damage enemy on trigger enter
         Damageable enemy = other.GetComponentInParent<Damageable>();
-        if (enemy && !_hits.Contains(enemy))
+
+        if (enemy && !_hits.Contains(enemy.gameObject))
         {
             // Track
             ScoreTracker.TrackShotsHit();
 
             enemy.Damage(_damage, other);
-            _hits.Add(enemy);
+            _hits.Add(enemy.gameObject);
         }
     }
 

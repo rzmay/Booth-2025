@@ -1,19 +1,25 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class PrintReceipt : MonoBehaviour
 {
-  public Camera renderCamera;                // The camera to render
-  public int targetWidth = 384;              // Desired width for the RenderTexture
-  public int targetHeight = 384;             // Desired height for the RenderTexture
-  public float threshold = 0.5f;             // Threshold for black-and-white conversion (0 - 1)
+  public Camera renderCamera;
+  public int targetWidth = 384;
+  public int targetHeight = 384;
+  public float threshold = 0.5f;
   public bool invert = true;
-  public bool saveToFile = false;            // Flag to save the texture and bitmap
-  public string fileName = "RenderedImage";  // Base name for saving files (without extension)
-  public string uploadUrl = "http://192.168.50.115/print";  // The URL to POST to
+  public bool flip = false;
+  public bool saveToFile = false;
+  public string fileName = "RenderedImage";
+  public string uploadUrl = "http://192.168.50.115/print";
+
+  [Header("Advanced Options")]
+  public bool sendFileHeader = false;
+  public float lineChunkHeight = 0f; // 0 means send the full image in one request
 
   private RenderTexture renderTexture;
 
@@ -25,7 +31,6 @@ public class PrintReceipt : MonoBehaviour
       return;
     }
 
-    // Set active
     renderCamera.gameObject.SetActive(true);
 
     AdjustCameraForResolution();
@@ -35,7 +40,6 @@ public class PrintReceipt : MonoBehaviour
     renderCamera.Render();
     renderCamera.targetTexture = null;
 
-    // Disable camera
     renderCamera.gameObject.SetActive(false);
 
     Texture2D texture = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false);
@@ -59,16 +63,13 @@ public class PrintReceipt : MonoBehaviour
     Destroy(texture);
     renderTexture.Release();
 
-    string byteString = BytesToCommaSeparatedString(bitmapBytes);
-    Debug.Log(byteString);
-    StartCoroutine(UploadImage(byteString));
+    _ = SendBitmapInChunksAsync(bitmapBytes);
   }
 
   private void AdjustCameraForResolution()
   {
     if (renderCamera.orthographic)
     {
-      float aspectRatio = (float)targetWidth / targetHeight;
       renderCamera.orthographicSize = 0.5f * targetHeight / 100f;
     }
     else
@@ -105,8 +106,7 @@ public class PrintReceipt : MonoBehaviour
 
         if (bitIndex == 8)
         {
-          bytes[byteIndex] = currentByte;
-          byteIndex++;
+          bytes[byteIndex++] = currentByte;
           currentByte = 0;
           bitIndex = 0;
         }
@@ -118,18 +118,21 @@ public class PrintReceipt : MonoBehaviour
       bytes[byteIndex] = currentByte;
     }
 
-    int bytesPerRow = targetWidth / 8;
-    byte[] flippedBmpBytes = new byte[bytes.Length];
-
-    for (int row = 0; row < targetHeight; row++)
+    if (flip)
     {
-      int sourceIndex = row * bytesPerRow;
-      int targetIndex = (targetHeight - row - 1) * bytesPerRow;
+      int bytesPerRow = targetWidth / 8;
+      byte[] flippedBmpBytes = new byte[bytes.Length];
 
-      Buffer.BlockCopy(bytes, sourceIndex, flippedBmpBytes, targetIndex, bytesPerRow);
+      for (int row = 0; row < targetHeight; row++)
+      {
+        int sourceIndex = row * bytesPerRow;
+        int targetIndex = (targetHeight - row - 1) * bytesPerRow;
+        Buffer.BlockCopy(bytes, sourceIndex, flippedBmpBytes, targetIndex, bytesPerRow);
+      }
+      return flippedBmpBytes;
     }
 
-    return flippedBmpBytes;
+    return bytes;
   }
 
   private void SaveTextureToFile(Texture2D texture)
@@ -142,60 +145,10 @@ public class PrintReceipt : MonoBehaviour
 
   private byte[] SaveBitmapToFile(byte[] bmpBytes)
   {
-    // Bitmap file header (14 bytes)
-    byte[] fileHeader = new byte[14];
-    fileHeader[0] = (byte)'B';
-    fileHeader[1] = (byte)'M';
-
-    int fileSize = 14 + 40 + bmpBytes.Length; // File header + info header + pixel data
-    fileHeader[2] = (byte)(fileSize);
-    fileHeader[3] = (byte)(fileSize >> 8);
-    fileHeader[4] = (byte)(fileSize >> 16);
-    fileHeader[5] = (byte)(fileSize >> 24);
-
-    fileHeader[10] = 14 + 40;  // Pixel data offset (header size)
-
-    // DIB Header (40 bytes)
-    byte[] dibHeader = new byte[40];
-    dibHeader[0] = 40;  // DIB header size
-    dibHeader[4] = (byte)(targetWidth);
-    dibHeader[5] = (byte)(targetWidth >> 8);
-    dibHeader[6] = (byte)(targetWidth >> 16);
-    dibHeader[7] = (byte)(targetWidth >> 24);
-
-    dibHeader[8] = (byte)(targetHeight);
-    dibHeader[9] = (byte)(targetHeight >> 8);
-    dibHeader[10] = (byte)(targetHeight >> 16);
-    dibHeader[11] = (byte)(targetHeight >> 24);
-
-    dibHeader[12] = 1;  // Number of color planes (1)
-    dibHeader[14] = 1;  // Bits per pixel (1 for black and white)
-    dibHeader[16] = 0;  // Compression method (0 = none)
-
-    int rawBitmapSize = bmpBytes.Length;
-    dibHeader[20] = (byte)(rawBitmapSize);
-    dibHeader[21] = (byte)(rawBitmapSize >> 8);
-    dibHeader[22] = (byte)(rawBitmapSize >> 16);
-    dibHeader[23] = (byte)(rawBitmapSize >> 24);
-
-    // Generate a palette (2 colors, black and white)
-    byte[] colorPalette = new byte[8];
-    colorPalette[0] = 0; // Blue
-    colorPalette[1] = 0; // Green
-    colorPalette[2] = 0; // Red
-    colorPalette[3] = 0; // Reserved
-
-    colorPalette[4] = 255; // Blue
-    colorPalette[5] = 255; // Green
-    colorPalette[6] = 255; // Red
-    colorPalette[7] = 0; // Reserved
-
-    // Combine all parts into a final byte array
-    byte[] bmpFile = new byte[fileHeader.Length + dibHeader.Length + colorPalette.Length + bmpBytes.Length];
-    Buffer.BlockCopy(fileHeader, 0, bmpFile, 0, fileHeader.Length);
-    Buffer.BlockCopy(dibHeader, 0, bmpFile, fileHeader.Length, dibHeader.Length);
-    Buffer.BlockCopy(colorPalette, 0, bmpFile, fileHeader.Length + dibHeader.Length, colorPalette.Length);
-    Buffer.BlockCopy(bmpBytes, 0, bmpFile, fileHeader.Length + dibHeader.Length + colorPalette.Length, bmpBytes.Length);
+    byte[] header = GenerateBmpHeader(bmpBytes.Length);
+    byte[] bmpFile = new byte[header.Length + bmpBytes.Length];
+    Buffer.BlockCopy(header, 0, bmpFile, 0, header.Length);
+    Buffer.BlockCopy(bmpBytes, 0, bmpFile, header.Length, bmpBytes.Length);
 
     string filePath = $"Assets/PrinterImages/{fileName}.bmp";
     File.WriteAllBytes(filePath, bmpFile);
@@ -204,48 +157,100 @@ public class PrintReceipt : MonoBehaviour
     return bmpFile;
   }
 
+  private byte[] GenerateBmpHeader(int pixelDataLength)
+  {
+    byte[] fileHeader = new byte[14];
+    fileHeader[0] = (byte)'B';
+    fileHeader[1] = (byte)'M';
+    int fileSize = 14 + 40 + 8 + pixelDataLength;
+    BitConverter.GetBytes(fileSize).CopyTo(fileHeader, 2);
+    fileHeader[10] = 14 + 40 + 8;
+
+    byte[] dibHeader = new byte[40];
+    BitConverter.GetBytes(40).CopyTo(dibHeader, 0);
+    BitConverter.GetBytes(targetWidth).CopyTo(dibHeader, 4);
+    BitConverter.GetBytes(targetHeight).CopyTo(dibHeader, 8);
+    BitConverter.GetBytes((short)1).CopyTo(dibHeader, 12);
+    BitConverter.GetBytes((short)1).CopyTo(dibHeader, 14);
+    BitConverter.GetBytes(pixelDataLength).CopyTo(dibHeader, 20);
+
+    byte[] palette = new byte[8] { 0, 0, 0, 0, 255, 255, 255, 0 };
+
+    byte[] header = new byte[fileHeader.Length + dibHeader.Length + palette.Length];
+    Buffer.BlockCopy(fileHeader, 0, header, 0, fileHeader.Length);
+    Buffer.BlockCopy(dibHeader, 0, header, fileHeader.Length, dibHeader.Length);
+    Buffer.BlockCopy(palette, 0, header, fileHeader.Length + dibHeader.Length, palette.Length);
+
+    return header;
+  }
+
+  public async Task SendBitmapInChunksAsync(byte[] bmpBytes)
+  {
+    int bytesPerRow = targetWidth / 8;
+    int rowsPerChunk = lineChunkHeight > 0 ? Mathf.FloorToInt(lineChunkHeight) : targetHeight;
+    int totalChunks = Mathf.CeilToInt((float)targetHeight / rowsPerChunk);
+
+    for (int chunk = 0; chunk < totalChunks; chunk++)
+    {
+      int startRow = chunk * rowsPerChunk;
+      int endRow = Mathf.Min((chunk + 1) * rowsPerChunk, targetHeight);
+      int chunkHeight = endRow - startRow;
+
+      byte[] chunkBytes = new byte[chunkHeight * bytesPerRow];
+      Buffer.BlockCopy(bmpBytes, startRow * bytesPerRow, chunkBytes, 0, chunkBytes.Length);
+
+      byte[] dataToSend = sendFileHeader ? Combine(GenerateBmpHeader(chunkBytes.Length), chunkBytes) : chunkBytes;
+      string byteString = BytesToCommaSeparatedString(dataToSend);
+
+      string url = $"{uploadUrl}?width={targetWidth}&height={chunkHeight}";
+
+      try
+      {
+        using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
+        {
+          byte[] postData = Encoding.UTF8.GetBytes(byteString);
+          request.uploadHandler = new UploadHandlerRaw(postData);
+          request.downloadHandler = new DownloadHandlerBuffer();
+          request.SetRequestHeader("Content-Type", "text/plain");
+
+          Debug.Log($"Uploading chunk {chunk + 1}/{totalChunks}...");
+          await request.SendWebRequest();
+
+          if (request.result != UnityWebRequest.Result.Success)
+          {
+            Debug.LogError($"Chunk {chunk + 1} upload failed: {request.error}");
+            break; // stop here or continue depending on your preference
+          }
+          else
+          {
+            Debug.Log($"Chunk {chunk + 1} uploaded successfully: {request.downloadHandler.text}");
+          }
+        }
+      }
+      catch (System.Exception ex)
+      {
+        Debug.LogError($"Exception during upload of chunk {chunk + 1}: {ex.Message}");
+        break;
+      }
+    }
+  }
+
+  private byte[] Combine(byte[] a, byte[] b)
+  {
+    byte[] result = new byte[a.Length + b.Length];
+    Buffer.BlockCopy(a, 0, result, 0, a.Length);
+    Buffer.BlockCopy(b, 0, result, a.Length, b.Length);
+    return result;
+  }
+
   private string BytesToCommaSeparatedString(byte[] bytes)
   {
     StringBuilder sb = new StringBuilder();
-
     for (int i = 0; i < bytes.Length; i++)
     {
-      if (i > 0)
-      {
-        sb.Append(", ");
-      }
+      if (i > 0) sb.Append(", ");
       sb.Append("0x" + bytes[i].ToString("X2"));
     }
-
     return sb.ToString();
-  }
-
-  private System.Collections.IEnumerator UploadImage(string byteString)
-  {
-    Debug.Log("Ay we runit");
-    string url = $"{uploadUrl}?width={targetWidth}&height={targetHeight}";
-
-    using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
-    {
-      request.useHttpContinue = true;
-
-      byte[] postData = Encoding.UTF8.GetBytes(byteString);
-
-      request.uploadHandler = new UploadHandlerRaw(postData);
-      request.downloadHandler = new DownloadHandlerBuffer();
-      request.SetRequestHeader("Content-Type", "text/plain");
-
-      Debug.Log("Uploading image...");
-      yield return request.SendWebRequest();
-
-      if (request.result == UnityWebRequest.Result.Success)
-      {
-        Debug.Log("Image uploaded successfully: " + request.downloadHandler.text);
-      }
-      else
-      {
-        Debug.LogError("Upload failed: " + request.error);
-      }
-    }
   }
 }

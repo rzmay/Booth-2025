@@ -108,6 +108,9 @@ public class UFOSpawner : Spawner
         {
           _spawned = true;
           Instantiate(prefab, targetPosition, targetRotation);
+
+          // Remove invincibility
+          if (_damageable.invincible) _damageable.invincible = false;
         }
 
         // Close tractor beam

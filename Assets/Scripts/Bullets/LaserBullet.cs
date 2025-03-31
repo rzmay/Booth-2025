@@ -50,6 +50,9 @@ public class LaserBullet : Bullet
         // Decrease time
         _timeRemaining -= Time.deltaTime;
 
+        // Track shots fired
+        ScoreTracker.TrackShotsFired();
+
         // Raycast to find hit
         RaycastHit hit;
         float length = 0f;

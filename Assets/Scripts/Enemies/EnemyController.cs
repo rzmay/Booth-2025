@@ -109,8 +109,8 @@ public class EnemyController : MonoBehaviour
     // Don't do any of this if dead
     if (_damageable.dead) return;
 
-    // If it's been stopped by a bullet, start it again
-    if (Mathf.Approximately(_navAgent.speed, 0f)) _navAgent.speed = _navAgentSpeed;
+    // Accelerate towards correct speed
+    _navAgent.speed = Mathf.Min(_navAgent.speed + _navAgent.acceleration * Time.deltaTime, _navAgentSpeed);
 
     bool hasPath = HasPath();
     bool hasLineOfSight = HasLineOfSight();
@@ -134,12 +134,13 @@ public class EnemyController : MonoBehaviour
     }
 
     // Only attack if within close to stopping range, attack has cooled down, and path of attack
+    float distance = Vector3.Distance(_player.transform.position, transform.position);
     if (
       _attackCooldown <= 0f &&
       !_startingAttack &&
       !_attacking &&
       hasPath &&
-      Vector3.Distance(_player.transform.position, transform.position) <= attackRange
+      distance <= attackRange
     )
     {
       Attack();
@@ -149,6 +150,19 @@ public class EnemyController : MonoBehaviour
 
     // Check melee hit if valid
     if (_attacking && !_hitPlayer) CheckMeleeHit();
+
+    // Rotate the enemy if the navmesh agent is stopped
+    if (distance <= _navAgent.stoppingDistance)
+    {
+      // Turn to face target manually
+      Vector3 direction = (_player.transform.position - transform.position).normalized;
+      direction.y = 0; // Prevent tilting
+      if (direction.sqrMagnitude > 0.001f)
+      {
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * _navAgent.angularSpeed);
+      }
+    }
   }
 
   bool HasPath()
@@ -256,7 +270,11 @@ public class EnemyController : MonoBehaviour
       Debug.Log($"[{name}:EnemyController] SetTrigger Death");
 
       // Animate or deathend
-      if (_animator) _animator.SetTrigger("Death");
+      if (_animator)
+      {
+        _animator.SetTrigger("Death");
+        _animator.SetBool("isDead", true);
+      }
       else OnDeathEnd();
     }
     else

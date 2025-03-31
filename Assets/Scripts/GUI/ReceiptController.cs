@@ -53,9 +53,9 @@ public class ReceiptController : DelayableMonoBehaviour
 
         // Calculate rank
         int rank = 0;
-        if (score >= 1500) rank++;
-        if (score >= 3000) rank++;
-        if (score >= 6000) rank++;
+        if (score >= 5000) rank++;
+        if (score >= 15000) rank++;
+        if (score >= 30000) rank++;
 
         // Set rank letter
         _letterImage.texture = _letterTextures[rank];

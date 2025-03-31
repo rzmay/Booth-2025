@@ -26,7 +26,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 1.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
       propertyPath: m_LocalScale.z
@@ -139,7 +139,7 @@ PrefabInstance:
     - target: {fileID: -3919144622627161780, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: f2a2380bbe5b64a438728dd5014258cf, type: 2}
+      objectReference: {fileID: 2100000, guid: 60fb22b5e6038492ea3ef8e6b4f2394a, type: 2}
     - target: {fileID: -3919144622627161780, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
@@ -194,7 +194,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
       propertyPath: m_Name
-      value: BasicAlien
+      value: HardAlien
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
       propertyPath: m_Layer
@@ -394,7 +394,7 @@ PrefabInstance:
       addedObject: {fileID: 8981779732472189686}
     - targetCorrespondingSourceObject: {fileID: 8548028513360189276, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7881390568808442377}
+      addedObject: {fileID: 8190711125157469519}
     - targetCorrespondingSourceObject: {fileID: -54791331365865378, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 393791545779800258}
@@ -437,7 +437,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8548028513360189276, guid: 64f0cee39fa324bbfb94575a2d879afb, type: 3}
   m_PrefabInstance: {fileID: 5948128470882650971}
   m_PrefabAsset: {fileID: 0}
---- !u!135 &7881390568808442377
+--- !u!135 &8190711125157469519
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -662,9 +662,9 @@ MonoBehaviour:
   invincible: 0
   damageAfterDeath: 0
   hitPoints:
-  - collider: {fileID: 7881390568808442377}
+  - collider: {fileID: 8190711125157469519}
     multiplier: 1.5
-  health: 10
+  health: 20
 --- !u!114 &5772287937772064036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -678,8 +678,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRange: 2
-  attackRate: 1
-  attackDamage: 5
+  attackRate: 1.5
+  attackDamage: 10
   hitAttackDelay: 1.5
   attackBone: {fileID: 4061178894141074141}
   attackBoneRadius: 0.2
@@ -722,7 +722,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01805c7ede46844ea91f526f40d6fa1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  points: 15
+  points: 30
 --- !u!82 &3461742009137580079
 AudioSource:
   m_ObjectHideFlags: 0
@@ -737,7 +737,7 @@ AudioSource:
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 0.9
   Loop: 0
   Mute: 0
   Spatialize: 1

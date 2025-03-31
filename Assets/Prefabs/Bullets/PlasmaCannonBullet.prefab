@@ -4924,9 +4924,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   decal: {fileID: 2194247665895638877, guid: 5592da0ab9e59421382fd3c2a187c431, type: 3}
   minSize: 0.1
-  sizeRatio: 0.5
-  shockwaveSizeRatio: 1.5
-  damageRatio: 10
+  sizeRatio: 0.25
+  shockwaveSizeRatio: 0.75
+  damageRatio: 17.5
   volumeRatio: 50
   _shockwavePrefab: {fileID: 870556577747816422, guid: 448e01046e11b47b8a847bc66e00beec, type: 3}
   _collisionAudio: {fileID: 8300000, guid: d4b0cf2f329034d37ac298e84c5cbca9, type: 3}

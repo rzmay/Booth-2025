@@ -16,10 +16,10 @@ public class MenuController : DelayableMonoBehaviour
     [SerializeField] private List<GameObject> _menus; // Expecting 4 -- title, gameplay, lose, win
     [SerializeField] private TMP_Text _gunDetectedName;
     [SerializeField] private TMP_Text _gunName;
-    [SerializeField] private Image _gunCooldownMeter;
+    [SerializeField] private MenuBar _gunCooldownMeter;
+    [SerializeField] private Image _gunCooldownMeterImage;
     [SerializeField] private Gradient _gunCooldownGradient;
-    //[SerializeField] private Image _gunDamageMeter;
-    [SerializeField] private RawImage _gunDamageMeterRaw;
+    [SerializeField] private MenuBar _gunDamageMeter;
     [SerializeField] private TMP_Text _gunCooldownLabel;
     [SerializeField] private Image _healthBarR;
     [SerializeField] private Image _healthBarL;
@@ -45,7 +45,6 @@ public class MenuController : DelayableMonoBehaviour
 
     // Saved to control charge meter graphics
     private float _chargeSpeed;
-    private float _dmgMeter;
 
     // Save for smooth lerping
     private float _health;
@@ -69,6 +68,10 @@ public class MenuController : DelayableMonoBehaviour
         _healthBarL.fillAmount = 1f;
         _healthBarR.fillAmount = 1f;
 
+        // Set health bar color
+        _healthBarL.color = _healthBarGradient.Evaluate(_healthBarL.fillAmount);
+        _healthBarR.color = _healthBarGradient.Evaluate(_healthBarR.fillAmount);
+
         // Set initial menu
         SetMenu(0);
     }
@@ -87,7 +90,7 @@ public class MenuController : DelayableMonoBehaviour
             _healthBarL.fillAmount = Mathf.Lerp(_healthBarL.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
             _healthBarR.fillAmount = Mathf.Lerp(_healthBarR.fillAmount, _health, _healthBarLerpFactor * Time.deltaTime);
             _healthBarL.color = _healthBarGradient.Evaluate(_healthBarL.fillAmount);
-            _healthBarR.color = _healthBarGradient.Evaluate(_healthBarL.fillAmount);
+            _healthBarR.color = _healthBarGradient.Evaluate(_healthBarR.fillAmount);
         }
         else
         {
@@ -115,7 +118,6 @@ public class MenuController : DelayableMonoBehaviour
 
     void _SetMenu(int index)
     {
-        Debug.Log($"[MenuController] Set menu ${index}");
         for (int i = 0; i < _Instance._menus.Count; i++)
         {
             _menuActive[i] = i == index;
@@ -141,18 +143,21 @@ public class MenuController : DelayableMonoBehaviour
         _gunName.text = name;
         _chargeSpeed = chargeSpeed;
 
-        //_gunDamageMeter.rectTransform.sizeDelta = new Vector2(damage, 1);
-        _gunCooldownMeter.rectTransform.sizeDelta = new Vector2(cooldown, 1);
 
         // If it's not a charge gun, have the charge meter full
-        if (chargeSpeed == 0) _dmgMeter = 1f;
+        if (chargeSpeed == 0) _gunDamageMeter.fill = 1f;
 
         // Continuous guns should not have a cooldown meter or label
         _gunCooldownMeter.gameObject.SetActive(cooldown != 0);
         _gunCooldownLabel.gameObject.SetActive(cooldown != 0);
 
+        // Set bar widths
+        _gunDamageMeter.size = damage;
+        _gunCooldownMeter.size = cooldown;
+
         // Gun cooldown meter should always start full
-        _gunCooldownMeter.fillAmount = 1f;
+        _gunCooldownMeter.fill = 1f;
+        _gunCooldownMeterImage.color = _gunCooldownGradient.Evaluate(_gunCooldownMeter.fill);
 
         // Set receipt controller
         ReceiptController.SetGun(name, image);
@@ -161,15 +166,15 @@ public class MenuController : DelayableMonoBehaviour
     void _SetCharge(float charge)
     {
         // Asymptotically towards full
-        _dmgMeter = 1f - (1f / Mathf.Pow(charge + 1f, _chargeSpeed));
-        _gunDamageMeterRaw.uvRect = new Rect(0, 0, _dmgMeter, 1);
+        float fill = 1f - (1f / Mathf.Pow(charge + 1f, _chargeSpeed));
+        _gunDamageMeter.fill = fill;
     }
 
     void _SetCooldown(float cooldown)
     {
         // Linearl fill
-        _gunCooldownMeter.fillAmount = 1f - cooldown;
-        _gunCooldownMeter.color = _gunCooldownGradient.Evaluate(_gunCooldownMeter.fillAmount);
+        _gunCooldownMeter.fill = 1f - cooldown;
+        _gunCooldownMeterImage.color = _gunCooldownGradient.Evaluate(_gunCooldownMeter.fill);
     }
 
     void _SetScore(int score, int combo, float comboTime)
